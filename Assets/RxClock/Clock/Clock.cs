@@ -1,21 +1,32 @@
 using System;
-using TMPro;
-using UnityEngine;
+using UniRx;
+using Zenject;
 
 namespace RxClock.Clock
 {
-    public class Clock : MonoBehaviour
+    public class Clock : IInitializable, IDisposable
     {
-        [SerializeField] private TMP_Text timeText;
-    
-        void Start()
+        private IDisposable updateSecond;
+        private readonly IClockPresenter clockPresenter;
+        private readonly ILogger logger;
+
+        public Clock([Inject] IClockPresenter clockPresenter)
         {
+            this.clockPresenter = clockPresenter;
         }
 
-        void Update()
+        public void Initialize()
         {
-            DateTime timeNow = DateTime.Now;
-            timeText.text = timeNow.ToString("HH:mm:ss");
+            updateSecond = Observable
+                .Interval(TimeSpan.FromSeconds(1))
+                .Subscribe(
+                    _ => clockPresenter.UpdateTime(DateTime.Now)
+                );
+        }
+
+        public void Dispose()
+        {
+            updateSecond?.Dispose();
         }
     }
 }
