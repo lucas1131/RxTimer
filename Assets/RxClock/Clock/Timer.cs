@@ -46,12 +46,6 @@ namespace RxClock.Clock
             RemainingTimeSeconds.Value = TimeSpan.Zero;
         }
 
-        public void Dispose()
-        {
-            updateRemainingTimeObservable?.Dispose();
-            RemainingTimeSeconds?.Dispose();
-        }
-
         private void UpdateTimer()
         {
             RemainingTimeSeconds.Value -= interval;
@@ -60,6 +54,12 @@ namespace RxClock.Clock
                 Pause();
                 MessageBroker.Default.Publish(new TimerFinishedMessage(TimerFinishedMessage.Reason.Completed));
             }
+        }
+        
+        public void Dispose()
+        {
+            updateRemainingTimeObservable?.Dispose();
+            RemainingTimeSeconds?.Dispose();
         }
     }
 }
