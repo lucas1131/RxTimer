@@ -5,6 +5,7 @@ namespace RxClock.Clock
 {
     public interface IClock
     {
-        public ReactiveProperty<DateTime> Now { get; }
+        ReactiveProperty<DateTime> Now { get; }
+        TimeZoneInfo GetTimeZone();
     }
 }

@@ -30,5 +30,10 @@ namespace RxClock.Clock
         {
             update?.Dispose();
         }
+        
+        public TimeZoneInfo GetTimeZone()
+        {
+            return TimeZoneInfo.Local;
+        }
     }
 }
