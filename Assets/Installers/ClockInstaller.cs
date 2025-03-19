@@ -5,6 +5,7 @@ using Zenject;
 [CreateAssetMenu(fileName = "ClockInstaller", menuName = "Installers/ClockInstaller")]
 public class ClockInstaller : ScriptableObjectInstaller<ClockInstaller>
 {
+    // ReSharper disable once UnassignedField.Global ScriptableObject serialized
     public bool UseOnlineTime;
     
     public override void InstallBindings()
@@ -18,5 +19,7 @@ public class ClockInstaller : ScriptableObjectInstaller<ClockInstaller>
         {
             Container.BindInterfacesAndSelfTo<SystemTimeProvider>().AsSingle();
         }
+
+        Container.BindInterfacesAndSelfTo<TimeInputFormatter>().AsSingle(); // If we had multiple formats this could use .WithId and later select which formatter to use
     }
 }

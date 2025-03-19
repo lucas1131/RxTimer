@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 5804314380369485231}
+  timezoneText: {fileID: 0}
 --- !u!1 &790052706175487428
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,6 +396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 7028328677268719448}
+  timezoneText: {fileID: 0}
 --- !u!1001 &8155155867954070014
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -551,3 +553,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 5804314380369485231}
+  timezoneText: {fileID: 7028328677268719448}
