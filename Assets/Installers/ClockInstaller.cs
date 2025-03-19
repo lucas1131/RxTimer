@@ -21,5 +21,6 @@ public class ClockInstaller : ScriptableObjectInstaller<ClockInstaller>
         }
 
         Container.BindInterfacesAndSelfTo<TimeInputFormatter>().AsSingle(); // If we had multiple formats this could use .WithId and later select which formatter to use
+        Container.BindInterfacesAndSelfTo<Timer>().AsSingle();
     }
 }

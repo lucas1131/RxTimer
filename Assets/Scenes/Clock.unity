@@ -1916,6 +1916,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6853987552974935128, guid: 8d5eab5e4560a4a43906c4bb87e34c2e, type: 3}
   m_PrefabInstance: {fileID: 614074949}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &709881009 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9011172231490907256, guid: 3b15e99b4943d43eba3f7e6584abdf06, type: 3}
+  m_PrefabInstance: {fileID: 1946102885}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &791235014
 GameObject:
   m_ObjectHideFlags: 0
@@ -4474,6 +4485,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5467230910248515527, guid: 3b15e99b4943d43eba3f7e6584abdf06, type: 3}
+      propertyPath: pauseButton
+      value: 
+      objectReference: {fileID: 709881009}
     - target: {fileID: 5718665758274673950, guid: 3b15e99b4943d43eba3f7e6584abdf06, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

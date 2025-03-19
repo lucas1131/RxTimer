@@ -1157,3 +1157,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputField: {fileID: 2485537687936944104}
+  startButton: {fileID: 8605249151411306984}
+  stopButton: {fileID: 9011172231490907256}
+  startButtonIcon: {fileID: 1941322305619589675}
+  stopButtonIcon: {fileID: 5213605010842811180}
+  startIcon: {fileID: 21300000, guid: 1c4e7d7063bad47c9a0d8e4a7358fdfc, type: 3}
+  stopIcon: {fileID: 21300000, guid: 9c9a1f1c6272d466fb174dd047a82625, type: 3}
+  pauseIcon: {fileID: 21300000, guid: 9c821e48b24ac4a6faab4b12cae417f7, type: 3}
+  resetIcon: {fileID: 21300000, guid: 9c9a1f1c6272d466fb174dd047a82625, type: 3}
