@@ -19,11 +19,12 @@ namespace RxClock.Clock
             updateUI = clock.Now.Subscribe(UpdateTime);
             
             TimeZoneInfo timeZoneInfo = clock.GetTimeZone();
-            // Comparing local time to UTC makes the offset opposite, so we need to negate it again to get offset from UTC 
-            DateTime dstAdjustedTime = TimeZoneInfo.ConvertTime(clock.Now.Value, TimeZoneInfo.Utc); 
-            string offsetText = -dstAdjustedTime.Hour >= 0 
-                ? $"+{-dstAdjustedTime.Hour}" 
-                : $"{-dstAdjustedTime.Hour}";
+            DateTime dstAdjustedTime = TimeZoneInfo.ConvertTime(clock.Now.Value, TimeZoneInfo.Utc);
+            
+            int hoursOffset = (clock.Now.Value - dstAdjustedTime).Hours;
+            string offsetText = hoursOffset < 0 
+                ? $"{hoursOffset}" 
+                : $"+{hoursOffset}";
             
             string timeZoneName = timeZoneInfo.IsDaylightSavingTime(clock.Now.Value) 
                 ? timeZoneInfo.DaylightName
