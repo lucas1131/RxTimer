@@ -13,6 +13,7 @@ namespace RxClock.Clock
         [SerializeField] private TMP_InputField inputField;
         private ITimeInputFormatter timeFormatter;
         private IDisposable onValueChangedObservable;
+        private IDisposable onCommitObservable;
 
         [Inject]
         public void Initialize(ITimeInputFormatter timeFormatter)
@@ -21,13 +22,28 @@ namespace RxClock.Clock
             inputField.characterLimit = 8; // HH:mm:ss
             onValueChangedObservable = inputField.onValueChanged
                 .AsObservable()
-                .Subscribe(Format);
+                .Subscribe(OnEditFormat);
+
+            onCommitObservable = inputField.onEndEdit
+                .AsObservable()
+                .Subscribe(OnCommitFormat);
         }
 
-        private void Format(string text)
+        private void OnDestroy()
         {
-            string digits = text.Where(char.IsDigit).ToString(); 
-            string formatted = timeFormatter.Format(digits);
+            onValueChangedObservable?.Dispose();
+            onCommitObservable?.Dispose();
+        }
+
+        private void OnEditFormat(string text)
+        {
+            string formatted = timeFormatter.EditFormat(text);
+            inputField.text = formatted;
+        }
+
+        private void OnCommitFormat(string text)
+        {
+            string formatted = timeFormatter.CommitFormat(text);
             inputField.text = formatted;
         }
     }

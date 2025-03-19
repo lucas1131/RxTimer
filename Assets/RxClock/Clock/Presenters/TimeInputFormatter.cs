@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -5,35 +6,52 @@ namespace RxClock.Clock
 {
     public class TimeInputFormatter : ITimeInputFormatter
     {
-        public string Format(string text)
+        public string EditFormat(string text)
         {
-            string formatted = text.Length switch
+            string digits = string.Concat(text.Where(char.IsDigit)); 
+            
+            string formatted = digits.Length switch
             {
                 (   0) => "",
-                (<= 2) => text,
-                (<= 4) => text.Insert(2, ":"),
-                (   _) => text.Insert(2, ":").Insert(5, ":")
+                (<= 2) => digits,
+                (<= 4) => digits.Insert(2, ":"),
+                (   _) => digits.Insert(2, ":").Insert(5, ":")
             };
 
+            return formatted;
+        }
 
-            string[] parts = formatted.Split(":");
-            
-            // HH is uncapped
-            if (parts.Length <= 1)
+        public string CommitFormat(string text)
+        {
+            string[] parts = text.Split(":");
+
+            // Normalize string format
+            if (parts.Length == 1)
             {
-                return formatted;
+                text = $"{text}:00:00";
+                return text; // HH is uncapped
+            } 
+            
+            else if (parts.Length == 2)
+            {
+                text = $"{text}:00";
             }
             
-            StringBuilder cappedTime = new (formatted.Take(3).ToString()); // HH:
+            // Redo split with proper format
+            parts = text.Split(":");
+
+            StringBuilder cappedTime = new (string.Concat(text.Take(3))); // HH:
+            List<string> timeParts = new(2);
             foreach (string part in parts.Skip(1))
             {
-                cappedTime.AppendJoin(":", CapMinutesAndSeconds(part));
+                timeParts.Add(CapMinutesAndSeconds(part));
             }
             
+            cappedTime.AppendJoin(":", timeParts);
             return cappedTime.ToString();
         }
 
-        private string CapMinutesAndSeconds(string text)
+        private static string CapMinutesAndSeconds(string text)
         {
             return text.Length switch
             {

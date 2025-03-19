@@ -2,6 +2,7 @@ namespace RxClock.Clock
 {
     public interface ITimeInputFormatter
     {
-        string Format(string text);
+        string EditFormat(string text);
+        string CommitFormat(string text);
     }
 }
