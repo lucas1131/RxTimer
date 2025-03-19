@@ -11,8 +11,6 @@ namespace RxClock.Clock
         void Start(TimeSpan seconds);
         void Resume();
         void Pause();
-        
-        // Stop and reset are the same thing but Reset generates an event
         void Stop();
         void Reset();
     }

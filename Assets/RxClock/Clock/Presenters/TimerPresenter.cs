@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Zenject;
 
@@ -26,11 +27,14 @@ namespace RxClock.Clock
         private ILogger logger;
         private ITimer timer;
         private ITimeInputFormatter timeFormatter;
+        private TimeSpan originalTimeToCount;
+        private bool isTimerRunning;
+        
+        // To have a proper Presenter - View layer separation, all these disposables' subscribes should be happening on the View script and this presenter just need to expose the events that triggers them 
         private IDisposable updateTimerObservable;
         private IDisposable onTimerStateChangedObservable;
         private IDisposable onValueChangedObservable;
         private IDisposable onCommitObservable;
-        private bool isTimerRunning;
 
         [Inject]
         public void Initialize(ILogger logger, ITimer timer, ITimeInputFormatter timeFormatter)
@@ -69,14 +73,19 @@ namespace RxClock.Clock
 
         private void OnEditFormat(string text)
         {
-            string formatted = timeFormatter.EditFormat(text);
-            inputField.text = formatted;
+            (string format, int caretOffset) = timeFormatter.EditFormat(text);
+            inputField.text = format;
+            if (inputField.isFocused)
+            {
+                inputField.stringPosition += caretOffset;
+            }
         }
 
         private void OnCommitFormat(string text)
         {
             string formatted = timeFormatter.CommitFormat(text);
             inputField.text = formatted;
+            originalTimeToCount = TimeSpan.Parse(inputField.text);
         }
 
         private void UpdateTimer(TimeSpan remainingTime)
@@ -92,11 +101,8 @@ namespace RxClock.Clock
                 stopButtonIcon.sprite = stopIcon;
                 
                 // When running, left button is STOP and right button is PAUSE
-                startButton.onClick.RemoveAllListeners();
-                startButton.onClick.AddListener(timer.Pause);
-                
-                stopButton.onClick.RemoveAllListeners();
-                stopButton.onClick.AddListener(timer.Stop);
+                ReplaceButtonListener(startButton, timer.Pause);
+                ReplaceButtonListener(stopButton, StopTimer);
             }
             else
             {
@@ -104,28 +110,55 @@ namespace RxClock.Clock
                 stopButtonIcon.sprite = resetIcon;
                 
                 // When NOT running, left button is RESET and right button is START
-                startButton.onClick.RemoveAllListeners();
-                startButton.onClick.AddListener(StartTimer);
-                
-                stopButton.onClick.RemoveAllListeners();
-                stopButton.onClick.AddListener(timer.Reset);
+                ReplaceButtonListener(startButton, StartTimer);
+                ReplaceButtonListener(stopButton, ResetTimer);
             }
             
             inputField.interactable = !isRunning;
         }
 
+        private static void ReplaceButtonListener(Button button, UnityAction action)
+        {
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(action);
+        }
+
         private void StartTimer()
         {
-            TimeSpan timeToCount = TimeSpan.Parse(inputField.text);
-            timer.Start(timeToCount);
+            logger.Info("Starting timer");
+            timer.Start(TimeSpan.Parse(inputField.text));
+        }
+
+        private void RestartTimer()
+        {
+            logger.Info("Restarting timer");
+            inputField.text = originalTimeToCount.ToString(@"hh\:mm\:ss");
+            StartTimer();
+        }
+
+        private void StopTimer()
+        {
+            logger.Info("Stopping timer");
+            inputField.text = originalTimeToCount.ToString(@"hh\:mm\:ss");
+            timer.Stop();
+        }
+        
+        private void ResetTimer()
+        {
+            logger.Info("Resetting timer");
+            inputField.text = "";
+            timer.Reset();
         }
 
         private void OnTimerFinished(TimerFinishedMessage message)
         {
+            SetState(false);
             if (message.FinishReason == TimerFinishedMessage.Reason.Completed)
             {
                 // TODO play alarm audio
                 logger.Info("Timer finished successfully");
+                ReplaceButtonListener(startButton, RestartTimer);
+                ReplaceButtonListener(stopButton, ResetTimer);
             }
         }
     }

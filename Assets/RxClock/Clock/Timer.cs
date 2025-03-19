@@ -38,13 +38,12 @@ namespace RxClock.Clock
         public void Stop()
         {
             Pause();
-            RemainingTimeSeconds.Value = TimeSpan.Zero;
         }
 
         public void Reset()
         {
             Stop();
-            MessageBroker.Default.Publish(new TimerFinishedMessage(TimerFinishedMessage.Reason.Aborted));
+            RemainingTimeSeconds.Value = TimeSpan.Zero;
         }
 
         public void Dispose()
@@ -58,7 +57,7 @@ namespace RxClock.Clock
             RemainingTimeSeconds.Value -= interval;
             if (RemainingTimeSeconds.Value <= TimeSpan.Zero)
             {
-                Stop();
+                Pause();
                 MessageBroker.Default.Publish(new TimerFinishedMessage(TimerFinishedMessage.Reason.Completed));
             }
         }

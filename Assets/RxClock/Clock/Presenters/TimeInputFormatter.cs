@@ -6,19 +6,19 @@ namespace RxClock.Clock
 {
     public class TimeInputFormatter : ITimeInputFormatter
     {
-        public string EditFormat(string text)
+        public (string format, int caretOffset) EditFormat(string text)
         {
-            string digits = string.Concat(text.Where(char.IsDigit)); 
-            
-            string formatted = digits.Length switch
+            string digits = string.Concat(text.Where(char.IsDigit));
+
+            (string, int) ret = digits.Length switch
             {
-                (   0) => "",
-                (<= 2) => digits,
-                (<= 4) => digits.Insert(2, ":"),
-                (   _) => digits.Insert(2, ":").Insert(5, ":")
+                (   0) => ("", 0),
+                (<= 2) => (digits, 0),
+                (<= 4) => (digits.Insert(2, ":"), 1),
+                (   _) => (digits.Insert(2, ":").Insert(5, ":"), 2)
             };
 
-            return formatted;
+            return ret;
         }
 
         public string CommitFormat(string text)
