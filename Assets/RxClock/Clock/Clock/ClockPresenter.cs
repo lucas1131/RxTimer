@@ -7,7 +7,7 @@ using Zenject;
 
 namespace RxClock.Clock
 {
-    public class ClockPresenter : MonoBehaviour, IClockPresenter
+    public class ClockPresenter : MonoBehaviour
     {
         [SerializeField] private TMP_Text timeText;
         [SerializeField] private TMP_Text timeZoneText;
