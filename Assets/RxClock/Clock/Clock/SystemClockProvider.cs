@@ -7,7 +7,7 @@ namespace RxClock.Clock
     // In production this could be a NetworkClockProvider and use online synced time
     public class SystemClockProvider : IClock, IInitializable, IDisposable
     {
-        public ReactiveProperty<DateTime> Now { get; } = new ReactiveProperty<DateTime>(DateTime.Now);
+        public ReactiveProperty<DateTime> Now { get; } = new (DateTime.Now);
         private IDisposable update;
         private readonly ILogger logger;
         
