@@ -7,12 +7,11 @@ namespace RxClock.Clock
     public class Stopwatch : IStopwatch, IDisposable
     {
         public ReactiveProperty<TimeSpan> TimeCounter { get; } = new ();
-        public IReadOnlyReactiveProperty<TimeSpan> CurrentLapStart => currentLapStart;
         public ReactiveCollection<TimeSpan> Laps { get; } = new ();
         public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
-
-        private readonly ReactiveProperty<TimeSpan> currentLapStart = new ();
+        
         private readonly ReactiveProperty<bool> isRunning = new ();
+        private readonly ReactiveProperty<TimeSpan> currentLapStart = new();
         private IDisposable updateTimeCounterObservable;
         
         public void Start()
