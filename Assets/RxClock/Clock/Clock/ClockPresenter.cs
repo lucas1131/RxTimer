@@ -9,12 +9,11 @@ namespace RxClock.Clock
 {
     public class ClockPresenter : MonoBehaviour
     {
-        [SerializeField] private TMP_Text timeText;
-        [SerializeField] private TMP_Text timeZoneText;
+        [Inject(Id="timeText")] private TMP_Text timeText;
         private IDisposable updateUI;
 
         [Inject]
-        public void Initialize(IClock clock)
+        public void Initialize(IClock clock, [Inject(Id="timeZoneText")] TMP_Text timeZoneText)
         {
             updateUI = clock.Now.Subscribe(UpdateTime);
             
@@ -31,7 +30,6 @@ namespace RxClock.Clock
                 : timeZoneInfo.StandardName;
             
             timeZoneText.text = $"{offsetText}H {timeZoneName}";
-            timeZoneText.text = $"{offsetText}H {timeZoneName}";
         }
         
         public void UpdateTime(DateTime time)
@@ -41,7 +39,7 @@ namespace RxClock.Clock
 
         private void OnDestroy()
         {
-            updateUI.Dispose();
+            updateUI?.Dispose();
         }
     }
 }
