@@ -200,6 +200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3902566287389116822}
   - component: {fileID: 4413021078521123819}
+  - component: {fileID: 534802306}
   m_Layer: 0
   m_Name: Content
   m_TagString: Untagged
@@ -225,7 +226,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 40, y: 0}
-  m_SizeDelta: {x: -80, y: 1144.3}
+  m_SizeDelta: {x: -90, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4413021078521123819
 MonoBehaviour:
@@ -253,6 +254,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &534802306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1010341334420314009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &2179689122319369569
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,10 +590,10 @@ RectTransform:
   m_Father: {fileID: 5695810700201454927}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 124, y: 124}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1944765640955557184
 CanvasRenderer:
@@ -651,10 +666,10 @@ RectTransform:
   m_Father: {fileID: 1624292992895364041}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 124, y: 124}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1507342236625832171
 CanvasRenderer:
@@ -852,8 +867,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8452079390391133934}
   m_HandleRect: {fileID: 4580745900307469240}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.7773835
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -951,12 +966,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
+  m_fontSize: 160
   m_fontSizeBase: 100
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 70
+  m_fontSizeMax: 160
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
@@ -1116,11 +1131,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: -1
+  m_MinWidth: 600
   m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: -1
-  m_FlexibleWidth: -1
+  m_PreferredWidth: 1200
+  m_PreferredHeight: 800
+  m_FlexibleWidth: 0
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
 --- !u!1001 &8155155867954070014
@@ -1133,6 +1148,26 @@ PrefabInstance:
     - target: {fileID: 1995325507803813, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
       propertyPath: m_text
       value: Stopwatch
+      objectReference: {fileID: 0}
+    - target: {fileID: 1995325507803813, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
+      propertyPath: m_fontSize
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 1995325507803813, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 1995325507803813, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 1995325507803813, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3328914734733677989, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
+      propertyPath: m_ChildForceExpandWidth
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3328914734733677990, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
       propertyPath: m_Pivot.x
@@ -1222,6 +1257,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TabStopwatch
       objectReference: {fileID: 0}
+    - target: {fileID: 3328914734733677991, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3875033698673515876, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1253,3 +1292,32 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3328914734733677990, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
   m_PrefabInstance: {fileID: 8155155867954070014}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6853987552974935129 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3328914734733677991, guid: 300967e90791041b0925bb9fa6e717c9, type: 3}
+  m_PrefabInstance: {fileID: 8155155867954070014}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1518175980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6853987552974935129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2c3ff1659b142ad9bc1584b013e0458, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  elapsedTimeText: {fileID: 411706737284987610}
+  lapEntryPrefab: {fileID: 136323992814099792, guid: cf90b446bd01d443798f2f8f5554678c, type: 3}
+  scrollViewContent: {fileID: 1010341334420314009}
+  scrollRect: {fileID: 3156685561120760957}
+  startButton: {fileID: 1753359316509753016}
+  stopButton: {fileID: 8027231671176336344}
+  startButtonIcon: {fileID: 6640441247777461371}
+  stopButtonIcon: {fileID: 7299719996440047133}
+  startIcon: {fileID: 21300000, guid: 1c4e7d7063bad47c9a0d8e4a7358fdfc, type: 3}
+  stopIcon: {fileID: 21300000, guid: 9c9a1f1c6272d466fb174dd047a82625, type: 3}
+  pauseIcon: {fileID: 21300000, guid: 9c821e48b24ac4a6faab4b12cae417f7, type: 3}
+  lapIcon: {fileID: 21300000, guid: ba0073dd8c9fe4c069209689f02409cc, type: 3}
