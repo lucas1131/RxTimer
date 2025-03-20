@@ -4324,6 +4324,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1607840548}
     m_Modifications:
+    - target: {fileID: 2485537687936944104, guid: 3b15e99b4943d43eba3f7e6584abdf06, type: 3}
+      propertyPath: m_ContentType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2485537687936944104, guid: 3b15e99b4943d43eba3f7e6584abdf06, type: 3}
+      propertyPath: m_KeyboardType
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2485537687936944104, guid: 3b15e99b4943d43eba3f7e6584abdf06, type: 3}
+      propertyPath: m_CharacterValidation
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6853987552974935128, guid: 3b15e99b4943d43eba3f7e6584abdf06, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
