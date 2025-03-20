@@ -17,7 +17,7 @@ namespace RxClock.Tests.Editor.Clock
 
         private void ThenBeEqualToSystemTime(DateTime now, DateTime expected)
         {
-            now.Should().BeCloseTo(expected, precision:TimeSpan.FromMilliseconds(10));
+            now.Should().BeCloseTo(expected, precision:acceptableError);
         }
     }
 }
