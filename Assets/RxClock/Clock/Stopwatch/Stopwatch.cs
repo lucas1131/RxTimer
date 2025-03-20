@@ -62,7 +62,7 @@ namespace RxClock.Clock
             TimeSpan lapTime = TimeCounter.Value - currentLapStart.Value;
             Laps.Add(lapTime);
             currentLapStart.Value = TimeCounter.Value;
-            logger.Info($@"Stopwatch lap: {lapTime:HH\:mm\:ss}");
+            logger.Info($@"Stopwatch lap: {lapTime:hh\:mm\:ss}");
         }
         
         private void UpdateCounter()

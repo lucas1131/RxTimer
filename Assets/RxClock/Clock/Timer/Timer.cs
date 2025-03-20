@@ -1,5 +1,6 @@
 using System;
 using UniRx;
+using Zenject;
 
 namespace RxClock.Clock
 {
@@ -10,13 +11,23 @@ namespace RxClock.Clock
 
         private IDisposable updateRemainingTimeObservable;
         private readonly TimeSpan interval = TimeSpan.FromSeconds(1); // Granularity here is only 1 second but could also be every frame with EveryUpdate
+        private readonly ILogger logger;
+
+        [Inject]
+        public Timer(ILogger logger)
+        {
+            this.logger = logger;
+        }
         
         public void Start(TimeSpan timeSpan)
         {
             if (IsRunning.Value)
             {
+                logger.Info("Start called when timer is already running");
                 return;
             }
+            
+            logger.Info("Starting timer");
             
             RemainingTimeSeconds.Value = timeSpan;
             
@@ -30,18 +41,17 @@ namespace RxClock.Clock
 
         public void Pause()
         {
+            logger.Info($@"Stopping timer at {RemainingTimeSeconds.Value:hh\:mm\:ss}");
             updateRemainingTimeObservable?.Dispose();
             updateRemainingTimeObservable = null;
             IsRunning.Value = false;
         }
 
-        public void Stop()
-        {
-            Pause();
-        }
+        public void Stop() => Pause();
 
         public void Reset()
         {
+            logger.Info("Resetting timer");
             Stop();
             RemainingTimeSeconds.Value = TimeSpan.Zero;
         }

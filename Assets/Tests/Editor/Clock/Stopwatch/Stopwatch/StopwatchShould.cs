@@ -13,6 +13,7 @@ namespace RxClock.Tests.Clock
         [SetUp]
         public void SetUp()
         {
+            Container.Bind<ILogger>().FromSubstitute().AsSingle();
             Container.BindInterfacesAndSelfTo<Stopwatch>().AsSingle();
             Container.Inject(this);
         }
