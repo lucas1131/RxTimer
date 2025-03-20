@@ -8,7 +8,8 @@ namespace RxClock.Clock
     // For now this is just a copy of SystemTimeProvider
     public class NetworkClockProvider : IClock, IInitializable, IDisposable
     {
-        public ReactiveProperty<DateTime> Now { get; } = new ReactiveProperty<DateTime>(DateTime.Now);
+        public IReadOnlyReactiveProperty<DateTime> Now => now;
+        private ReactiveProperty<DateTime> now { get; } = new (DateTime.Now);
         private IDisposable update;
         private readonly ILogger logger;
 
@@ -23,7 +24,7 @@ namespace RxClock.Clock
             update = Observable
                 .Interval(TimeSpan.FromSeconds(1))
                 .Subscribe(
-                    _ => Now.Value = DateTime.Now
+                    _ => now.Value = DateTime.Now
                 );
         }
 

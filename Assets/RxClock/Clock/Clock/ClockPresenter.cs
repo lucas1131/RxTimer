@@ -2,19 +2,21 @@ using System;
 using UniRx;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace RxClock.Clock
 {
     public class ClockPresenter : MonoBehaviour
     {
-        [Inject(Id="timeText")] private TMP_Text timeText;
+        private TMP_Text timeText;
         private IDisposable updateUI;
 
         [Inject]
-        public void Initialize(IClock clock, [Inject(Id="timeZoneText")] TMP_Text timeZoneText)
+        public void Initialize(IClock clock, 
+            [Inject(Id="timeText")] TMP_Text timeText, 
+            [Inject(Id="timeZoneText")] TMP_Text timeZoneText)
         {
+            this.timeText = timeText;
             updateUI = clock.Now.Subscribe(UpdateTime);
             
             TimeZoneInfo timeZoneInfo = clock.GetTimeZone();
