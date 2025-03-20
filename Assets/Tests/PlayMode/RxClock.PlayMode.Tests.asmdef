@@ -1,5 +1,5 @@
 {
-    "name": "RxClock.Tests",
+    "name": "RxClock.PlayMode.Tests",
     "rootNamespace": "RxClock.Tests",
     "references": [
         "GUID:27619889b8ba8c24980f49ee34dbb44a",
@@ -15,9 +15,7 @@
         "GUID:795616221cc364971bb1353ac7e06338",
         "GUID:812fc37d27c454c6fa20c78661a87d73"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

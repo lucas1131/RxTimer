@@ -2,7 +2,7 @@ using NUnit.Framework;
 using RxClock.Clock;
 using Zenject;
 
-namespace RxClock.Tests.Clock
+namespace RxClock.Tests.Editor.Clock
 {
     [TestFixture]
     public partial class StopwatchShould : ZenjectUnitTestFixture

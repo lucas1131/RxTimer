@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace RxClock.Tests.Clock
+namespace RxClock.Tests.Editor.Clock
 {
     public partial class TimerShould
     {

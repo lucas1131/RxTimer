@@ -3,7 +3,7 @@ using RxClock.Clock;
 using UniRx;
 using Zenject;
 
-namespace RxClock.Tests.Clock
+namespace RxClock.Tests.Editor.Clock
 {
     [TestFixture]
     public partial class TimerShould : ZenjectUnitTestFixture
