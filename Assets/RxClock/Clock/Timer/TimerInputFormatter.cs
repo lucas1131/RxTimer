@@ -6,6 +6,8 @@ namespace RxClock.Clock
 {
     public class TimerInputFormatter : ITimerInputFormatter
     {
+        private readonly int maxTimerStringSize = 8;
+        
         public (string format, int caretOffset) EditFormat(string text)
         {
             string digits = string.Concat(text.Where(char.IsDigit));
@@ -23,18 +25,27 @@ namespace RxClock.Clock
 
         public string CommitFormat(string text)
         {
+            if (text == string.Empty)
+            {
+                return text;
+            }
+            
             string[] parts = text.Split(":");
 
             // Normalize string format
             if (parts.Length == 1)
             {
-                text = $"{text}:00:00";
+                text = text.Length == 1 ? $"{text}0:00:00" : $"{text}:00:00";
                 return text; // HH is uncapped
             } 
             
             else if (parts.Length == 2)
             {
-                text = $"{text}:00";
+                text = text.Length == 4 ? $"{text}0:00" : $"{text}:00";
+            } 
+            else if (text.Length == 7)
+            {
+                text = $"{text}0";
             }
             
             // Redo split with proper format
@@ -48,7 +59,7 @@ namespace RxClock.Clock
             }
             
             cappedTime.AppendJoin(":", timeParts);
-            return cappedTime.ToString();
+            return cappedTime.ToString(); 
         }
 
         private static string CapMinutesAndSeconds(string text)
