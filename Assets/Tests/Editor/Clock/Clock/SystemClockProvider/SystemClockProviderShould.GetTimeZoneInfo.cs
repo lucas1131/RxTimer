@@ -10,12 +10,12 @@ namespace RxClock.Tests.Clock
         public void GetSystemTimeZoneInfo()
         {
             TimeZoneInfo timeZoneInfo = WhenGettingTimeZoneInfo();
-            ShouldBeEqualToSystemTimeZone(timeZoneInfo, TimeZoneInfo.Local);
+            ThenBeEqualToSystemTimeZone(timeZoneInfo, TimeZoneInfo.Local);
         }
 
         private TimeZoneInfo WhenGettingTimeZoneInfo() => systemClock.GetTimeZone();
 
-        private void ShouldBeEqualToSystemTimeZone(TimeZoneInfo timeZoneInfo, TimeZoneInfo expected)
+        private void ThenBeEqualToSystemTimeZone(TimeZoneInfo timeZoneInfo, TimeZoneInfo expected)
         {
             timeZoneInfo.Should().Be(expected);
         }

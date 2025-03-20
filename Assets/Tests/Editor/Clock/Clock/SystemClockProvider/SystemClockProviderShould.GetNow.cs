@@ -10,12 +10,12 @@ namespace RxClock.Tests.Clock
         public void GetSystemTime()
         {
             DateTime now = WhenGettingTimeNow();
-            ShouldBeEqualToSystemTime(now, DateTime.Now);
+            ThenBeEqualToSystemTime(now, DateTime.Now);
         }
 
         private DateTime WhenGettingTimeNow() => systemClock.Now.Value;
 
-        private void ShouldBeEqualToSystemTime(DateTime now, DateTime expected)
+        private void ThenBeEqualToSystemTime(DateTime now, DateTime expected)
         {
             now.Should().BeCloseTo(expected, precision:TimeSpan.FromMilliseconds(10));
         }
