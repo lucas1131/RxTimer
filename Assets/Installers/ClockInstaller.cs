@@ -1,4 +1,5 @@
 using RxClock.Clock;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -21,6 +22,7 @@ public class ClockInstaller : ScriptableObjectInstaller<ClockInstaller>
         }
 
         Container.BindInterfacesAndSelfTo<TimerInputFormatter>().AsSingle(); // If we had multiple formats this could use .WithId and later select which formatter to use
+        Container.Bind<IMessageBroker>().FromMethod(() => MessageBroker.Default).AsSingle();
         Container.BindInterfacesAndSelfTo<Timer>().AsSingle();
         Container.BindInterfacesAndSelfTo<Stopwatch>().AsSingle();
     }

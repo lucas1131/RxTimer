@@ -12,11 +12,13 @@ namespace RxClock.Clock
         private IDisposable updateRemainingTimeObservable;
         private readonly TimeSpan interval = TimeSpan.FromSeconds(1); // Granularity here is only 1 second but could also be every frame with EveryUpdate
         private readonly ILogger logger;
+        private readonly IMessageBroker messageBroker;
 
         [Inject]
-        public Timer(ILogger logger)
+        public Timer(ILogger logger, IMessageBroker messageBroker)
         {
             this.logger = logger;
+            this.messageBroker = messageBroker;
         }
         
         public void Start(TimeSpan timeSpan)
@@ -24,6 +26,12 @@ namespace RxClock.Clock
             if (IsRunning.Value)
             {
                 logger.Info("Start called when timer is already running");
+                return;
+            }
+
+            if (timeSpan == TimeSpan.Zero)
+            {
+                logger.Info("Trying to start timer with 0 seconds, ignoring");
                 return;
             }
             
@@ -62,7 +70,7 @@ namespace RxClock.Clock
             if (RemainingTimeSeconds.Value <= TimeSpan.Zero)
             {
                 Pause();
-                MessageBroker.Default.Publish(new TimerFinishedMessage(TimerFinishedMessage.Reason.Completed));
+                messageBroker.Publish(new TimerFinishedMessage(TimerFinishedMessage.Reason.Completed));
             }
         }
         

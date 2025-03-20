@@ -37,7 +37,7 @@ namespace RxClock.Clock
         private IDisposable onCommitObservable;
 
         [Inject]
-        public void Initialize(ILogger logger, ITimer timer, ITimerInputFormatter timerFormatter)
+        public void Initialize(ILogger logger, ITimer timer, ITimerInputFormatter timerFormatter, IMessageBroker messageBroker)
         {
             this.logger = logger;
             this.timer = timer;
@@ -58,7 +58,7 @@ namespace RxClock.Clock
                 .AsObservable()
                 .Subscribe(OnCommitFormat);
 
-            MessageBroker.Default
+            messageBroker
                 .Receive<TimerFinishedMessage>()
                 .Subscribe(OnTimerFinished);
         }
