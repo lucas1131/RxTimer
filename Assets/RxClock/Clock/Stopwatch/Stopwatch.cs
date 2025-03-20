@@ -1,6 +1,7 @@
 using System;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace RxClock.Clock
 {
@@ -12,14 +13,24 @@ namespace RxClock.Clock
         
         private readonly ReactiveProperty<bool> isRunning = new ();
         private readonly ReactiveProperty<TimeSpan> currentLapStart = new();
+        private readonly ILogger logger;
         private IDisposable updateTimeCounterObservable;
+
+        [Inject]
+        public Stopwatch(ILogger logger)
+        {
+            this.logger = logger;
+        }
         
         public void Start()
         {
             if (isRunning.Value)
             {
+                logger.Info("Start called when stopwatch is already running");
                 return;
             }
+            
+            logger.Info("Starting stopwatch");
             
             isRunning.Value = true;
             updateTimeCounterObservable = Observable
@@ -31,6 +42,7 @@ namespace RxClock.Clock
 
         public void Pause()
         {
+            logger.Info("Pausing stopwatch");
             updateTimeCounterObservable?.Dispose();
             updateTimeCounterObservable = null;
             isRunning.Value = false;
@@ -38,6 +50,7 @@ namespace RxClock.Clock
 
         public void Stop()
         {
+            logger.Info("Resetting stopwatch");
             Pause();
             TimeCounter.Value = TimeSpan.Zero;
             currentLapStart.Value = TimeSpan.Zero;
@@ -46,8 +59,10 @@ namespace RxClock.Clock
 
         public void Lap()
         {
-            Laps.Add(TimeCounter.Value - currentLapStart.Value);
+            TimeSpan lapTime = TimeCounter.Value - currentLapStart.Value;
+            Laps.Add(lapTime);
             currentLapStart.Value = TimeCounter.Value;
+            logger.Info($@"Stopwatch lap: {lapTime:HH\:mm\:ss}");
         }
         
         private void UpdateCounter()

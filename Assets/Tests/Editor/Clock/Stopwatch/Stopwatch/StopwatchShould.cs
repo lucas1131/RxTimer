@@ -8,6 +8,7 @@ namespace RxClock.Tests.Clock
     public partial class StopwatchShould : ZenjectUnitTestFixture
     {
         [Inject] private Stopwatch stopwatch;
+        [Inject] private ILogger loggerMock;
         
         [SetUp]
         public void SetUp()
