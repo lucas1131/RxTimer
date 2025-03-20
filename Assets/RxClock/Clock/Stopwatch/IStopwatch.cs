@@ -5,8 +5,8 @@ namespace RxClock.Clock
 {
     public interface IStopwatch
     {
-        ReactiveProperty<TimeSpan> TimeCounter { get; }
-        ReactiveCollection<TimeSpan> Laps { get; }
+        IReadOnlyReactiveProperty<TimeSpan> TimeCounter { get; }
+        IReadOnlyReactiveCollection<TimeSpan> Laps { get; }
         IReadOnlyReactiveProperty<bool> IsRunning { get; }
         void Start();
         void Resume();

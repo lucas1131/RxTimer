@@ -6,8 +6,6 @@ namespace RxClock.Clock
 {
     public class TimerInputFormatter : ITimerInputFormatter
     {
-        private readonly int maxTimerStringSize = 8;
-        
         public (string format, int caretOffset) EditFormat(string text)
         {
             string digits = string.Concat(text.Where(char.IsDigit));

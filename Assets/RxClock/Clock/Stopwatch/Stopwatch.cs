@@ -7,10 +7,12 @@ namespace RxClock.Clock
 {
     public class Stopwatch : IStopwatch, IDisposable
     {
-        public ReactiveProperty<TimeSpan> TimeCounter { get; } = new ();
-        public ReactiveCollection<TimeSpan> Laps { get; } = new ();
+        public IReadOnlyReactiveProperty<TimeSpan> TimeCounter => timeCounter;
+        public IReadOnlyReactiveCollection<TimeSpan> Laps => laps;
         public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
         
+        private readonly ReactiveProperty<TimeSpan> timeCounter= new ();
+        private readonly ReactiveCollection<TimeSpan> laps = new ();
         private readonly ReactiveProperty<bool> isRunning = new ();
         private readonly ReactiveProperty<TimeSpan> currentLapStart = new();
         private readonly ILogger logger;
@@ -52,22 +54,22 @@ namespace RxClock.Clock
         {
             logger.Info("Resetting stopwatch");
             Pause();
-            TimeCounter.Value = TimeSpan.Zero;
+            timeCounter.Value = TimeSpan.Zero;
             currentLapStart.Value = TimeSpan.Zero;
-            Laps.Clear();
+            laps.Clear();
         }
 
         public void Lap()
         {
             TimeSpan lapTime = TimeCounter.Value - currentLapStart.Value;
-            Laps.Add(lapTime);
+            laps.Add(lapTime);
             currentLapStart.Value = TimeCounter.Value;
             logger.Info($@"Stopwatch lap: {lapTime:hh\:mm\:ss}");
         }
         
         private void UpdateCounter()
         {
-            TimeCounter.Value += TimeSpan.FromSeconds(Time.deltaTime);
+            timeCounter.Value += TimeSpan.FromSeconds(Time.deltaTime);
         }
 
         public void Dispose()
