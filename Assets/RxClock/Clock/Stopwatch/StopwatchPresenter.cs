@@ -30,7 +30,7 @@ namespace RxClock.Clock
         
         private ILogger logger;
         private IStopwatch stopwatch;
-        private ITimeInputFormatter timeFormatter;
+        private ITimerInputFormatter timerFormatter;
         private TimeSpan elapsedTime;
         private bool isStopwatchRunning;
         

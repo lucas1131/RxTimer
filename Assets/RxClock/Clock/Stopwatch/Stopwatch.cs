@@ -7,21 +7,22 @@ namespace RxClock.Clock
     public class Stopwatch : IStopwatch, IDisposable
     {
         public ReactiveProperty<TimeSpan> TimeCounter { get; } = new ();
-        public ReactiveProperty<TimeSpan> CurrentLapStart { get; private set; } = new ();
+        public IReadOnlyReactiveProperty<TimeSpan> CurrentLapStart => currentLapStart;
         public ReactiveCollection<TimeSpan> Laps { get; } = new ();
-        public ReactiveProperty<bool> IsRunning { get; private set; } = new ();
+        public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
 
+        private readonly ReactiveProperty<TimeSpan> currentLapStart = new ();
+        private readonly ReactiveProperty<bool> isRunning = new ();
         private IDisposable updateTimeCounterObservable;
-        private readonly TimeSpan interval = TimeSpan.FromSeconds(1); // Granularity here is only 1 second but could also be every frame with EveryUpdate
         
         public void Start()
         {
-            if (IsRunning.Value)
+            if (isRunning.Value)
             {
                 return;
             }
             
-            IsRunning.Value = true;
+            isRunning.Value = true;
             updateTimeCounterObservable = Observable
                 .EveryUpdate() 
                 .Subscribe(_ => UpdateCounter());
@@ -33,21 +34,21 @@ namespace RxClock.Clock
         {
             updateTimeCounterObservable?.Dispose();
             updateTimeCounterObservable = null;
-            IsRunning.Value = false;
+            isRunning.Value = false;
         }
 
         public void Stop()
         {
             Pause();
             TimeCounter.Value = TimeSpan.Zero;
-            CurrentLapStart.Value = TimeSpan.Zero;
+            currentLapStart.Value = TimeSpan.Zero;
             Laps.Clear();
         }
 
         public void Lap()
         {
-            Laps.Add(TimeCounter.Value - CurrentLapStart.Value);
-            CurrentLapStart.Value = TimeCounter.Value;
+            Laps.Add(TimeCounter.Value - currentLapStart.Value);
+            currentLapStart.Value = TimeCounter.Value;
         }
         
         private void UpdateCounter()
@@ -57,6 +58,7 @@ namespace RxClock.Clock
 
         public void Dispose()
         {
+            updateTimeCounterObservable?.Dispose();
         }
     }
 }

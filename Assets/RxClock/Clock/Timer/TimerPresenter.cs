@@ -26,7 +26,7 @@ namespace RxClock.Clock
         
         private ILogger logger;
         private ITimer timer;
-        private ITimeInputFormatter timeFormatter;
+        private ITimerInputFormatter timerFormatter;
         private TimeSpan originalTimeToCount;
         private bool isTimerRunning;
         
@@ -37,11 +37,11 @@ namespace RxClock.Clock
         private IDisposable onCommitObservable;
 
         [Inject]
-        public void Initialize(ILogger logger, ITimer timer, ITimeInputFormatter timeFormatter)
+        public void Initialize(ILogger logger, ITimer timer, ITimerInputFormatter timerFormatter)
         {
             this.logger = logger;
             this.timer = timer;
-            this.timeFormatter = timeFormatter;
+            this.timerFormatter = timerFormatter;
             
             updateTimerObservable = timer.RemainingTimeSeconds
                 .Subscribe(UpdateTimer);
@@ -73,7 +73,7 @@ namespace RxClock.Clock
 
         private void OnEditFormat(string text)
         {
-            (string format, int caretOffset) = timeFormatter.EditFormat(text);
+            (string format, int caretOffset) = timerFormatter.EditFormat(text);
             inputField.text = format;
             if (inputField.isFocused)
             {
@@ -83,7 +83,7 @@ namespace RxClock.Clock
 
         private void OnCommitFormat(string text)
         {
-            string formatted = timeFormatter.CommitFormat(text);
+            string formatted = timerFormatter.CommitFormat(text);
             inputField.text = formatted;
             originalTimeToCount = TimeSpan.Parse(inputField.text);
         }

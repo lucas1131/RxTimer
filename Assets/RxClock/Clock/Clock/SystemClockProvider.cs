@@ -4,22 +4,21 @@ using Zenject;
 
 namespace RxClock.Clock
 {
-    // Online time is not implemented. This is just a proof of concept for injecting online or system time.
-    // For now this is just a copy of SystemTimeProvider
-    public class NetworkTimeProvider : IClock, IInitializable, IDisposable
+    // In production this could be a NetworkClockProvider and use online synced time
+    public class SystemClockProvider : IClock, IInitializable, IDisposable
     {
         public ReactiveProperty<DateTime> Now { get; } = new ReactiveProperty<DateTime>(DateTime.Now);
         private IDisposable update;
         private readonly ILogger logger;
-
-        public NetworkTimeProvider([Inject] ILogger logger)
+        
+        public SystemClockProvider([Inject] ILogger logger)
         {
             this.logger = logger;
         }
 
         public void Initialize()
         {
-            logger.Info("NetworkTimeProvider initialized (fake online)");
+            logger.Info("SystemTimeProvider initialized");
             update = Observable
                 .Interval(TimeSpan.FromSeconds(1))
                 .Subscribe(

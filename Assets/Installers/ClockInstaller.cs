@@ -13,14 +13,14 @@ public class ClockInstaller : ScriptableObjectInstaller<ClockInstaller>
         if (UseOnlineTime)
         {
             // This is just as a proof of concept, for now online time is not implemented
-            Container.BindInterfacesAndSelfTo<NetworkTimeProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<NetworkClockProvider>().AsSingle();
         }
         else
         {
-            Container.BindInterfacesAndSelfTo<SystemTimeProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SystemClockProvider>().AsSingle();
         }
 
-        Container.BindInterfacesAndSelfTo<TimeInputFormatter>().AsSingle(); // If we had multiple formats this could use .WithId and later select which formatter to use
+        Container.BindInterfacesAndSelfTo<TimerInputFormatter>().AsSingle(); // If we had multiple formats this could use .WithId and later select which formatter to use
         Container.BindInterfacesAndSelfTo<Timer>().AsSingle();
         Container.BindInterfacesAndSelfTo<Stopwatch>().AsSingle();
     }

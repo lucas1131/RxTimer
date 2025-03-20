@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RxClock.Clock
 {
-    public class TimeInputFormatter : ITimeInputFormatter
+    public class TimerInputFormatter : ITimerInputFormatter
     {
         public (string format, int caretOffset) EditFormat(string text)
         {

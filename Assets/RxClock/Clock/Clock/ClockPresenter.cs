@@ -10,7 +10,7 @@ namespace RxClock.Clock
     public class ClockPresenter : MonoBehaviour, IClockPresenter
     {
         [SerializeField] private TMP_Text timeText;
-        [FormerlySerializedAs("timezoneText")] [SerializeField] private TMP_Text timeZoneText;
+        [SerializeField] private TMP_Text timeZoneText;
         private IDisposable updateUI;
 
         [Inject]
