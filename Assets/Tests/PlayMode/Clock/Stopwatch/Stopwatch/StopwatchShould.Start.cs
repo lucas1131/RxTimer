@@ -14,12 +14,12 @@ namespace RxClock.Tests.PlayMode.Clock
         {
             WhenStopwatchIsStarted();
 
-            float deltaTime = await GivenNFramesPassed(10);
+            float deltaTime = await GivenNFramesHavePassed(10);
 
             ThenCounterShouldBe(deltaTime);
         });
 
-        private async UniTask<float> GivenNFramesPassed(int frames)
+        private async UniTask<float> GivenNFramesHavePassed(int frames)
         {
             float deltaTime = 0;
             for(int i = 0; i < frames; i++)

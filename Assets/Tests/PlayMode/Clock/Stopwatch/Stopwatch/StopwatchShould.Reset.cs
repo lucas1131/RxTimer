@@ -12,7 +12,7 @@ namespace RxClock.Tests.PlayMode.Clock
         public IEnumerator ResetCounterWhenStopIsCalled() => UniTask.ToCoroutine(async () =>
         {
             await GivenStopwatchHasStarted();
-            await GivenNFramesPassed(1);
+            await GivenNFramesHavePassed(1);
 
             WhenStopping();
 

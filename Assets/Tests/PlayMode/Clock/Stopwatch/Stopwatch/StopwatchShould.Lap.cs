@@ -14,14 +14,14 @@ namespace RxClock.Tests.PlayMode.Clock
         public IEnumerator SaveEachLapWhenLapping() => UniTask.ToCoroutine(async () =>
         {
             await GivenStopwatchHasStarted();
-            float firstLap = await GivenNFramesPassed(60);
+            float firstLap = await GivenNFramesHavePassed(60);
 
             WhenLapping();
             ThenLapsShouldHaveSize(1);
             ThenLapsTimeShouldBe(TimeSpan.FromSeconds(firstLap));
             
             // Again
-            float secondLap = await GivenNFramesPassed(30);
+            float secondLap = await GivenNFramesHavePassed(30);
             
             WhenLapping();
             
