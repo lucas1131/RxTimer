@@ -11,14 +11,13 @@ namespace RxClock.Clock
 {
     public class StopwatchPresenter : MonoBehaviour
     {
-        [SerializeField] private TMP_Text elapsedTimeText;
-        [SerializeField] private LapEntryPresenter lapEntryPrefab;
-        [SerializeField] private GameObject scrollViewContent;
-        [SerializeField] private ScrollRect scrollRect;
+        [SerializeField, InjectOptional(Id="stopwatch_elapsedTimeText")] private TMP_Text elapsedTimeText;
+        [SerializeField, InjectOptional(Id="stopwatch_scrollViewContentHolder")] private GameObject scrollViewContent;
+        [SerializeField, InjectOptional(Id="stopwatch_scrollRect")] private ScrollRect scrollRect;
         
         [Header("Buttons")]
-        [SerializeField] private Button startButton;
-        [SerializeField] private Button stopButton;
+        [SerializeField, InjectOptional(Id="stopwatch_startButton")] private Button startButton;
+        [SerializeField, InjectOptional(Id="stopwatch_stopButton")] private Button stopButton;
         [SerializeField, Tooltip("Right button")] private Image startButtonIcon;
         [SerializeField, Tooltip("Left button")] private Image stopButtonIcon;
         
@@ -30,6 +29,7 @@ namespace RxClock.Clock
         
         private ILogger logger;
         private IStopwatch stopwatch;
+        private LapEntryPresenter lapEntryPrefab;
         private ITimerInputFormatter timerFormatter;
         private TimeSpan elapsedTime;
         private bool isStopwatchRunning;
@@ -40,11 +40,16 @@ namespace RxClock.Clock
         private IDisposable onLapObservable;
 
         [Inject]
-        public void Initialize(ILogger logger, IStopwatch stopwatch)
+        public void Initialize(ILogger logger, IStopwatch stopwatch, LapEntryPresenter lapEntryPrefab)
         {
             this.logger = logger;
             this.stopwatch = stopwatch;
+            this.lapEntryPrefab = lapEntryPrefab;
             
+            startButtonIcon ??= startButton.GetComponent<Image>();
+            stopButtonIcon ??= stopButton.GetComponent<Image>();
+
+            Dispose();
             updateStopwatchObservable = stopwatch.TimeCounter
                 .Subscribe(UpdateTotalTime);
 
@@ -57,6 +62,11 @@ namespace RxClock.Clock
         }
         
         private void OnDestroy()
+        {
+            Dispose();
+        }
+
+        private void Dispose()
         {
             updateStopwatchObservable?.Dispose();
             onStopwatchStateChangedObservable?.Dispose();

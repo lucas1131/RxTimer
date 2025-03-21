@@ -35,6 +35,8 @@ namespace RxClock.Clock
             logger.Info("Starting stopwatch");
             
             isRunning.Value = true;
+            
+            Dispose();
             updateTimeCounterObservable = Observable
                 .EveryUpdate() 
                 .Subscribe(_ => UpdateCounter());

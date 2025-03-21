@@ -21,6 +21,8 @@ namespace RxClock.Clock
         public void Initialize()
         {
             logger.Info("NetworkTimeProvider initialized (fake online)");
+            
+            Dispose();
             update = Observable
                 .Interval(TimeSpan.FromSeconds(1))
                 .Subscribe(

@@ -10,7 +10,7 @@ namespace RxClock.Clock
         [SerializeField] private TMP_Text lapTimeText;
         [SerializeField] private TMP_Text elapsedTimeText;
         
-        public void Setup(int index, TimeSpan lapTime, TimeSpan elapsedTime)
+        public virtual void Setup(int index, TimeSpan lapTime, TimeSpan elapsedTime)
         {
             indexText.text = (index+1).ToString();
             lapTimeText.text = lapTime.ToString(@"hh\:mm\:ss\.fff");

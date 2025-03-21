@@ -43,6 +43,7 @@ namespace RxClock.Clock
             this.timer = timer;
             this.timerFormatter = timerFormatter;
             
+            Dispose();
             updateTimerObservable = timer.RemainingTimeSeconds
                 .Subscribe(UpdateTimer);
 
@@ -64,6 +65,11 @@ namespace RxClock.Clock
         }
 
         private void OnDestroy()
+        {
+            Dispose();
+        }
+
+        private void Dispose()
         {
             updateTimerObservable?.Dispose();
             onTimerStateChangedObservable?.Dispose();

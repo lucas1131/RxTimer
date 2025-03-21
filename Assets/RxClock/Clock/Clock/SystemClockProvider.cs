@@ -20,6 +20,8 @@ namespace RxClock.Clock
         public void Initialize()
         {
             logger.Info("SystemTimeProvider initialized");
+
+            Dispose();
             update = Observable
                 .Interval(TimeSpan.FromSeconds(1))
                 .Subscribe(
