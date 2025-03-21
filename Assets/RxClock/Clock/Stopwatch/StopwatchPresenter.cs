@@ -133,7 +133,7 @@ namespace RxClock.Clock
         private async UniTask SetScrollRectToBottomAfterLayoutUpdate()
         {
             // This needs to happen after one frame so the scroll rect layout is properly updated after entry instantiation
-            await UniTask.Yield();
+            await UniTask.NextFrame();
             scrollRect.verticalNormalizedPosition = 0f; 
         }
 

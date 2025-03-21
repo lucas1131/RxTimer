@@ -28,6 +28,11 @@ namespace RxClock.Tests.PlayMode.Clock
             stopwatchMock.mockedLaps.Add(lapTime);
             await OneFrame();
         }
+        
+        private async UniTask GivenStopwatchHasLappedNTimes(int laps)
+        {
+            while(--laps > 0) await GivenStopwatchHasLapped(TimeSpan.FromSeconds(1));
+        }
 
         private void WhenStopButtonIsClicked()
         {

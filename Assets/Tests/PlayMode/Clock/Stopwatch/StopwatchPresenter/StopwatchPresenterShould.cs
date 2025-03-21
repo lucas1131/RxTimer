@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using NSubstitute;
-using NSubstitute.Extensions;
 using NUnit.Framework;
 using RxClock.Clock;
 using TMPro;
@@ -85,7 +82,6 @@ namespace RxClock.Tests.PlayMode.Clock
             Container
                 .Bind<LapEntryPresenter>()
                 .To<StubLapEntryPresenterMock>()
-                // .To<LapEntryPresenter>()
                 .FromInstance(testableInstance)
                 .AsSingle();
         }

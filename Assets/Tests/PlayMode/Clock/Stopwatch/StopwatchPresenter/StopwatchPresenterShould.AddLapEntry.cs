@@ -30,14 +30,16 @@ namespace RxClock.Tests.PlayMode.Clock
             ThenNumberOfLapEntryInstancesShouldBe(4);
         });
 
-        // [UnityTest]
-        // public IEnumerator MoveScrollViewToBottomAfterCreatingLapEntry()
-        // {
-        //     yield return null;
-        // }
+        [UnityTest]
+        public IEnumerator MoveScrollViewToBottomAfterCreatingLapEntry() => UniTask.ToCoroutine(async () =>
+        {
+            await GivenStopwatchHasLappedNTimes(10);
+            
+            ThenScrollViewPositionShouldBe(0f); // Y+ is up Y- is down in unity, so bottom is 0 and top is 1
+        });
         
         private async UniTask OneFrame() => await UniTask.NextFrame();
-
+        
         private void WhenStopwatchLaps(TimeSpan lapTime) =>
             stopwatchMock.mockedLaps.Add(lapTime);
 
@@ -45,6 +47,11 @@ namespace RxClock.Tests.PlayMode.Clock
         {
             StubLapEntryPresenterMock[] presenterInstances = scrollViewContentHolder.GetComponentsInChildren<StubLapEntryPresenterMock>();
             presenterInstances.Should().HaveCount(count);
+        }
+
+        private void ThenScrollViewPositionShouldBe(float position)
+        {
+            scrollRect.verticalNormalizedPosition.Should().Be(position);
         }
     }
 }
