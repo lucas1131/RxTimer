@@ -8,9 +8,9 @@ namespace RxClock.Tests.PlayMode.Clock
     public partial class StopwatchShould : ZenjectIntegrationTestFixture
     {
         // Playmode tests are really inconsistent with time based behaviors
-        private readonly TimeSpan acceptableError = TimeSpan.FromMilliseconds(250); 
+        private readonly TimeSpan acceptableError = TimeSpan.FromMilliseconds(100f);
         
-        [Inject] private SystemClockProvider systemClock; 
+        [Inject] private Stopwatch stopwatch; 
         
         [SetUp]
         public void SetUp()
@@ -18,7 +18,7 @@ namespace RxClock.Tests.PlayMode.Clock
             PreInstall();
             
             Container.Bind<ILogger>().FromSubstitute().AsSingle();
-            Container.BindInterfacesAndSelfTo<SystemClockProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<Stopwatch>().AsSingle();
             Container.Inject(this);
             
             PostInstall();
