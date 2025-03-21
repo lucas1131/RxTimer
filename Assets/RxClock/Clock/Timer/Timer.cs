@@ -52,7 +52,7 @@ namespace RxClock.Clock
 
             isRunning.Value = true;
             
-            Dispose();
+            updateRemainingTimeObservable?.Dispose();
             updateRemainingTimeObservable = Observable
                 .Interval(interval)
                 .Subscribe(_ => UpdateTimer());
