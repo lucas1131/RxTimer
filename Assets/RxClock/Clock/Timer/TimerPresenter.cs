@@ -1,4 +1,5 @@
 using System;
+using ModestTree;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -12,33 +13,32 @@ namespace RxClock.Clock
     {
         [SerializeField] private TMP_InputField inputField;
 
-        [Header("Buttons")] [SerializeField] private Button startButton;
-
+        [Header("Buttons")] 
+        [SerializeField] private Button startButton;
         [SerializeField] private Button stopButton;
 
-        [SerializeField] [Tooltip("Right button")]
-        private Image startButtonIcon;
+        [SerializeField, Tooltip("Right button")] private Image startButtonIcon;
+        [SerializeField, Tooltip("Left button")] private Image stopButtonIcon;
 
-        [SerializeField] [Tooltip("Left button")]
-        private Image stopButtonIcon;
-
-        [Header("Icons")] [SerializeField] private Sprite startIcon;
-
+        [Header("Icons")] 
+        [SerializeField] private Sprite startIcon;
         [SerializeField] private Sprite stopIcon;
         [SerializeField] private Sprite pauseIcon;
         [SerializeField] private Sprite resetIcon;
+        
         private bool isTimerRunning;
-
         private ILogger logger;
-        private IDisposable onCommitObservable;
-        private IDisposable onTimerStateChangedObservable;
-        private IDisposable onValueChangedObservable;
         private TimeSpan originalTimeToCount;
         private ITimer timer;
         private ITimerInputFormatter timerFormatter;
-
+        private AudioSource audioSource;
+        private AudioClip timerFinishedAlert;
+        
         // To have a proper Presenter - View layer separation, all these disposables' subscribes should be happening on the View script and this presenter just need to expose the events that triggers them 
         private IDisposable updateTimerObservable;
+        private IDisposable onTimerStateChangedObservable;
+        private IDisposable onValueChangedObservable;
+        private IDisposable onCommitObservable;
 
         private void OnDestroy()
         {
@@ -46,15 +46,22 @@ namespace RxClock.Clock
         }
 
         [Inject]
-        public void Initialize(ILogger logger, ITimer timer, ITimerInputFormatter timerFormatter,
-            IMessageBroker messageBroker)
+        public void Initialize(ILogger logger, 
+            ITimer timer, 
+            ITimerInputFormatter timerFormatter,
+            IMessageBroker messageBroker,
+            AudioSource audioSource,
+            [Inject(Id="timer_finishedAlert")] AudioClip timerFinishedAlert)
         {
             this.logger = logger;
             this.timer = timer;
             this.timerFormatter = timerFormatter;
+            this.audioSource = audioSource;
+            this.timerFinishedAlert = timerFinishedAlert;
 
             Dispose();
             updateTimerObservable = timer.RemainingTimeSeconds
+                // .ObserveEveryValueChanged(property => )
                 .Subscribe(UpdateTimer);
 
             onTimerStateChangedObservable = timer.IsRunning
@@ -93,7 +100,7 @@ namespace RxClock.Clock
         {
             string formatted = timerFormatter.CommitFormat(text);
             inputField.text = formatted;
-            originalTimeToCount = TimeSpan.Parse(inputField.text);
+            originalTimeToCount = text.IsEmpty() ? TimeSpan.Zero : TimeSpan.Parse(inputField.text);
         }
 
         private void UpdateTimer(TimeSpan remainingTime)
@@ -135,6 +142,7 @@ namespace RxClock.Clock
         {
             logger.Info("Starting timer");
             timer.Start(TimeSpan.Parse(inputField.text));
+            audioSource.Stop();
         }
 
         private void RestartTimer()
@@ -149,6 +157,7 @@ namespace RxClock.Clock
             logger.Info("Stopping timer");
             inputField.text = originalTimeToCount.ToString(@"hh\:mm\:ss");
             timer.Stop();
+            audioSource.Stop();
         }
 
         private void ResetTimer()
@@ -156,14 +165,16 @@ namespace RxClock.Clock
             logger.Info("Resetting timer");
             inputField.text = "";
             timer.Reset();
+            audioSource.Stop();
         }
 
         private void OnTimerFinished(TimerFinishedMessage message)
         {
             SetState(false);
+            // inputField.text = "00:00:00"; 
             if (message.FinishReason == TimerFinishedMessage.Reason.Completed)
             {
-                // TODO play alarm audio
+                audioSource.PlayOneShot(timerFinishedAlert);
                 logger.Info("Timer finished successfully");
                 ReplaceButtonListener(startButton, RestartTimer);
                 ReplaceButtonListener(stopButton, ResetTimer);

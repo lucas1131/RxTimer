@@ -7,12 +7,16 @@ namespace RxClock.Clock
 {
     public class Stopwatch : IStopwatch, IDisposable
     {
-        private readonly ReactiveProperty<TimeSpan> currentLapStart = new();
-        private readonly ReactiveProperty<bool> isRunning = new();
-        private readonly ReactiveCollection<TimeSpan> laps = new();
-        private readonly ILogger logger;
-
+        public IReadOnlyReactiveProperty<TimeSpan> TimeCounter => timeCounter;
+        public IReadOnlyReactiveCollection<TimeSpan> Laps => laps;
+        public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
+        
         private readonly ReactiveProperty<TimeSpan> timeCounter = new();
+        private readonly ReactiveCollection<TimeSpan> laps = new();
+        private readonly ReactiveProperty<bool> isRunning = new();
+        private readonly ReactiveProperty<TimeSpan> currentLapStart = new();
+        private readonly ILogger logger;
+        
         private IDisposable updateTimeCounterObservable;
 
         [Inject]
@@ -25,10 +29,6 @@ namespace RxClock.Clock
         {
             updateTimeCounterObservable?.Dispose();
         }
-
-        public IReadOnlyReactiveProperty<TimeSpan> TimeCounter => timeCounter;
-        public IReadOnlyReactiveCollection<TimeSpan> Laps => laps;
-        public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
 
         public void Start()
         {

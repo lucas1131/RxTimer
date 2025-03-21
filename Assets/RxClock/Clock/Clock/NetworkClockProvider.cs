@@ -8,16 +8,17 @@ namespace RxClock.Clock
     // For now this is just a copy of SystemTimeProvider
     public class NetworkClockProvider : IClock, IInitializable, IDisposable
     {
+        public IReadOnlyReactiveProperty<DateTime> Now => now;
+        
+        private readonly ReactiveProperty<DateTime> now = new(DateTime.Now);
         private readonly ILogger logger;
+        
         private IDisposable update;
 
         public NetworkClockProvider([Inject] ILogger logger)
         {
             this.logger = logger;
         }
-
-        private ReactiveProperty<DateTime> now { get; } = new(DateTime.Now);
-        public IReadOnlyReactiveProperty<DateTime> Now => now;
 
         public TimeZoneInfo GetTimeZone()
         {

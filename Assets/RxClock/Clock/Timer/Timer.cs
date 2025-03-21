@@ -6,10 +6,14 @@ namespace RxClock.Clock
 {
     public class Timer : ITimer, IDisposable
     {
-        private readonly TimeSpan
-            interval = TimeSpan
-                .FromSeconds(1); // Granularity here is only 1 second but could also be every frame with EveryUpdate
-
+        public IReadOnlyReactiveProperty<TimeSpan> RemainingTimeSeconds => remainingTimeSeconds;
+        public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
+        
+        private readonly ReactiveProperty<TimeSpan> remainingTimeSeconds = new();
+        private readonly ReactiveProperty<bool> isRunning = new();
+        
+        // Granularity here is only 1 second but could also be every frame with EveryUpdate
+        private readonly TimeSpan interval = TimeSpan.FromSeconds(1); 
         private readonly ILogger logger;
         private readonly IMessageBroker messageBroker;
 
@@ -25,15 +29,12 @@ namespace RxClock.Clock
         public void Dispose()
         {
             updateRemainingTimeObservable?.Dispose();
-            RemainingTimeSeconds?.Dispose();
+            remainingTimeSeconds?.Dispose();
         }
-
-        public ReactiveProperty<TimeSpan> RemainingTimeSeconds { get; } = new();
-        public ReactiveProperty<bool> IsRunning { get; } = new();
 
         public void Start(TimeSpan timeSpan)
         {
-            if (IsRunning.Value)
+            if (isRunning.Value)
             {
                 logger.Info("Start called when timer is already running");
                 return;
@@ -47,9 +48,11 @@ namespace RxClock.Clock
 
             logger.Info("Starting timer");
 
-            RemainingTimeSeconds.Value = timeSpan;
+            remainingTimeSeconds.Value = timeSpan;
 
-            IsRunning.Value = true;
+            isRunning.Value = true;
+            
+            Dispose();
             updateRemainingTimeObservable = Observable
                 .Interval(interval)
                 .Subscribe(_ => UpdateTimer());
@@ -57,15 +60,15 @@ namespace RxClock.Clock
 
         public void Resume()
         {
-            Start(RemainingTimeSeconds.Value);
+            Start(remainingTimeSeconds.Value);
         }
 
         public void Pause()
         {
-            logger.Info($@"Stopping timer at {RemainingTimeSeconds.Value:hh\:mm\:ss}");
+            logger.Info($@"Stopping timer at {remainingTimeSeconds.Value:hh\:mm\:ss}");
             updateRemainingTimeObservable?.Dispose();
             updateRemainingTimeObservable = null;
-            IsRunning.Value = false;
+            isRunning.Value = false;
         }
 
         public void Stop()
@@ -77,12 +80,12 @@ namespace RxClock.Clock
         {
             logger.Info("Resetting timer");
             Stop();
-            RemainingTimeSeconds.Value = TimeSpan.Zero;
+            remainingTimeSeconds.Value = TimeSpan.Zero;
         }
 
         private void UpdateTimer()
         {
-            RemainingTimeSeconds.Value -= interval;
+            remainingTimeSeconds.Value -= interval;
             if (RemainingTimeSeconds.Value <= TimeSpan.Zero)
             {
                 Pause();

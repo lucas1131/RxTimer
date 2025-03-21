@@ -5,7 +5,12 @@ namespace RxClock.Clock
         public enum Reason
         {
             Completed,
-            Aborted,
+            
+            // this is unused here because there really is no reason in a simple app such as this but
+            // if I was integrating this with a more complex app, there is a good chance that I would
+            // want a way to cancel a timer externally, like with async tasks, cancellation tokens.
+            Aborted, 
+            
             Unknown
         }
 

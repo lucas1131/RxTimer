@@ -11,32 +11,22 @@ namespace RxClock.Clock
 {
     public class StopwatchPresenter : MonoBehaviour
     {
-        [SerializeField] [InjectOptional(Id = "stopwatch_elapsedTimeText")]
-        private TMP_Text elapsedTimeText;
+        [SerializeField, InjectOptional(Id = "stopwatch_elapsedTimeText")] private TMP_Text elapsedTimeText;
+        [SerializeField, InjectOptional(Id = "stopwatch_scrollViewContentHolder")] private GameObject scrollViewContent;
+        [SerializeField, InjectOptional(Id = "stopwatch_scrollRect")] private ScrollRect scrollRect;
 
-        [SerializeField] [InjectOptional(Id = "stopwatch_scrollViewContentHolder")]
-        private GameObject scrollViewContent;
-
-        [SerializeField] [InjectOptional(Id = "stopwatch_scrollRect")]
-        private ScrollRect scrollRect;
-
-        [Header("Buttons")] [SerializeField] [InjectOptional(Id = "stopwatch_startButton")]
-        private Button startButton;
-
-        [SerializeField] [InjectOptional(Id = "stopwatch_stopButton")]
-        private Button stopButton;
-
-        [SerializeField] [Tooltip("Right button")]
-        private Image startButtonIcon;
-
-        [SerializeField] [Tooltip("Left button")]
-        private Image stopButtonIcon;
-
-        [Header("Icons")] [SerializeField] private Sprite startIcon;
-
+        [Header("Buttons")] 
+        [SerializeField, InjectOptional(Id = "stopwatch_startButton")] private Button startButton;
+        [SerializeField, InjectOptional(Id = "stopwatch_stopButton")] private Button stopButton;
+        [SerializeField, Tooltip("Right button")] private Image startButtonIcon;
+        [SerializeField, Tooltip("Left button")] private Image stopButtonIcon;
+        
+        [Header("Icons")] 
+        [SerializeField] private Sprite startIcon;
         [SerializeField] private Sprite stopIcon;
         [SerializeField] private Sprite pauseIcon;
         [SerializeField] private Sprite lapIcon;
+        
         private TimeSpan elapsedTime;
         private bool isStopwatchRunning;
         private LapEntryPresenter lapEntryPrefab;
