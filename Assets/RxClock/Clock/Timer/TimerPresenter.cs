@@ -11,38 +11,48 @@ namespace RxClock.Clock
     public class TimerPresenter : MonoBehaviour
     {
         [SerializeField] private TMP_InputField inputField;
-        
-        [Header("Buttons")]
-        [SerializeField] private Button startButton;
+
+        [Header("Buttons")] [SerializeField] private Button startButton;
+
         [SerializeField] private Button stopButton;
-        [SerializeField, Tooltip("Right button")] private Image startButtonIcon;
-        [SerializeField, Tooltip("Left button")] private Image stopButtonIcon;
-        
-        [Header("Icons")]
-        [SerializeField] private Sprite startIcon;
+
+        [SerializeField] [Tooltip("Right button")]
+        private Image startButtonIcon;
+
+        [SerializeField] [Tooltip("Left button")]
+        private Image stopButtonIcon;
+
+        [Header("Icons")] [SerializeField] private Sprite startIcon;
+
         [SerializeField] private Sprite stopIcon;
         [SerializeField] private Sprite pauseIcon;
         [SerializeField] private Sprite resetIcon;
-        
-        private ILogger logger;
-        private ITimer timer;
-        private ITimerInputFormatter timerFormatter;
-        private TimeSpan originalTimeToCount;
         private bool isTimerRunning;
-        
-        // To have a proper Presenter - View layer separation, all these disposables' subscribes should be happening on the View script and this presenter just need to expose the events that triggers them 
-        private IDisposable updateTimerObservable;
+
+        private ILogger logger;
+        private IDisposable onCommitObservable;
         private IDisposable onTimerStateChangedObservable;
         private IDisposable onValueChangedObservable;
-        private IDisposable onCommitObservable;
+        private TimeSpan originalTimeToCount;
+        private ITimer timer;
+        private ITimerInputFormatter timerFormatter;
+
+        // To have a proper Presenter - View layer separation, all these disposables' subscribes should be happening on the View script and this presenter just need to expose the events that triggers them 
+        private IDisposable updateTimerObservable;
+
+        private void OnDestroy()
+        {
+            Dispose();
+        }
 
         [Inject]
-        public void Initialize(ILogger logger, ITimer timer, ITimerInputFormatter timerFormatter, IMessageBroker messageBroker)
+        public void Initialize(ILogger logger, ITimer timer, ITimerInputFormatter timerFormatter,
+            IMessageBroker messageBroker)
         {
             this.logger = logger;
             this.timer = timer;
             this.timerFormatter = timerFormatter;
-            
+
             Dispose();
             updateTimerObservable = timer.RemainingTimeSeconds
                 .Subscribe(UpdateTimer);
@@ -64,11 +74,6 @@ namespace RxClock.Clock
                 .Subscribe(OnTimerFinished);
         }
 
-        private void OnDestroy()
-        {
-            Dispose();
-        }
-
         private void Dispose()
         {
             updateTimerObservable?.Dispose();
@@ -81,10 +86,7 @@ namespace RxClock.Clock
         {
             (string format, int caretOffset) = timerFormatter.EditFormat(text);
             inputField.text = format;
-            if (inputField.isFocused)
-            {
-                inputField.stringPosition += caretOffset;
-            }
+            if (inputField.isFocused) inputField.stringPosition += caretOffset;
         }
 
         private void OnCommitFormat(string text)
@@ -105,7 +107,7 @@ namespace RxClock.Clock
             {
                 startButtonIcon.sprite = pauseIcon;
                 stopButtonIcon.sprite = stopIcon;
-                
+
                 // When running, left button is STOP and right button is PAUSE
                 ReplaceButtonListener(startButton, timer.Pause);
                 ReplaceButtonListener(stopButton, StopTimer);
@@ -114,12 +116,12 @@ namespace RxClock.Clock
             {
                 startButtonIcon.sprite = startIcon;
                 stopButtonIcon.sprite = resetIcon;
-                
+
                 // When NOT running, left button is RESET and right button is START
                 ReplaceButtonListener(startButton, StartTimer);
                 ReplaceButtonListener(stopButton, ResetTimer);
             }
-            
+
             inputField.interactable = !isRunning;
         }
 
@@ -148,7 +150,7 @@ namespace RxClock.Clock
             inputField.text = originalTimeToCount.ToString(@"hh\:mm\:ss");
             timer.Stop();
         }
-        
+
         private void ResetTimer()
         {
             logger.Info("Resetting timer");

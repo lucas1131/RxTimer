@@ -11,26 +11,32 @@ namespace RxClock.Tests.PlayMode.Clock
     public partial class StopwatchShould
     {
         [UnityTest]
-        public IEnumerator SaveEachLapWhenLapping() => UniTask.ToCoroutine(async () =>
+        public IEnumerator SaveEachLapWhenLapping()
         {
-            await GivenStopwatchHasStarted();
-            float firstLap = await GivenNFramesHavePassed(60);
+            return UniTask.ToCoroutine(async () =>
+            {
+                await GivenStopwatchHasStarted();
+                float firstLap = await GivenNFramesHavePassed(60);
 
-            WhenLapping();
-            ThenLapsShouldHaveSize(1);
-            ThenLapsTimeShouldBe(TimeSpan.FromSeconds(firstLap));
-            
-            // Again
-            float secondLap = await GivenNFramesHavePassed(30);
-            
-            WhenLapping();
-            
-            ThenLapsShouldHaveSize(2);
-            ThenLapsTimeShouldBe(TimeSpan.FromSeconds(firstLap), TimeSpan.FromSeconds(secondLap));
-            ThenCounterShouldBe(firstLap + secondLap);
-        });
+                WhenLapping();
+                ThenLapsShouldHaveSize(1);
+                ThenLapsTimeShouldBe(TimeSpan.FromSeconds(firstLap));
 
-        private void WhenLapping() => stopwatch.Lap();
+                // Again
+                float secondLap = await GivenNFramesHavePassed(30);
+
+                WhenLapping();
+
+                ThenLapsShouldHaveSize(2);
+                ThenLapsTimeShouldBe(TimeSpan.FromSeconds(firstLap), TimeSpan.FromSeconds(secondLap));
+                ThenCounterShouldBe(firstLap + secondLap);
+            });
+        }
+
+        private void WhenLapping()
+        {
+            stopwatch.Lap();
+        }
 
         private void ThenLapsShouldHaveSize(int count)
         {

@@ -7,14 +7,25 @@ namespace RxClock.Clock
     // In production this could be a NetworkClockProvider and use online synced time
     public class SystemClockProvider : IClock, IInitializable, IDisposable
     {
-        public IReadOnlyReactiveProperty<DateTime> Now => now;
-        private ReactiveProperty<DateTime> now { get; } = new (DateTime.Now);
-        private IDisposable update;
         private readonly ILogger logger;
-        
+        private IDisposable update;
+
         public SystemClockProvider([Inject] ILogger logger)
         {
             this.logger = logger;
+        }
+
+        private ReactiveProperty<DateTime> now { get; } = new(DateTime.Now);
+        public IReadOnlyReactiveProperty<DateTime> Now => now;
+
+        public TimeZoneInfo GetTimeZone()
+        {
+            return TimeZoneInfo.Local;
+        }
+
+        public void Dispose()
+        {
+            update?.Dispose();
         }
 
         public void Initialize()
@@ -27,16 +38,6 @@ namespace RxClock.Clock
                 .Subscribe(
                     _ => now.Value = DateTime.Now
                 );
-        }
-
-        public void Dispose()
-        {
-            update?.Dispose();
-        }
-        
-        public TimeZoneInfo GetTimeZone()
-        {
-            return TimeZoneInfo.Local;
         }
     }
 }

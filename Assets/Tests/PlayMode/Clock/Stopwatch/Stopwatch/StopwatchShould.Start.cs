@@ -10,19 +10,22 @@ namespace RxClock.Tests.PlayMode.Clock
     public partial class StopwatchShould
     {
         [UnityTest]
-        public IEnumerator CountTimeWhenStartIsCalled() => UniTask.ToCoroutine(async () =>
+        public IEnumerator CountTimeWhenStartIsCalled()
         {
-            WhenStopwatchIsStarted();
+            return UniTask.ToCoroutine(async () =>
+            {
+                WhenStopwatchIsStarted();
 
-            float deltaTime = await GivenNFramesHavePassed(10);
+                float deltaTime = await GivenNFramesHavePassed(10);
 
-            ThenCounterShouldBe(deltaTime);
-        });
+                ThenCounterShouldBe(deltaTime);
+            });
+        }
 
         private async UniTask<float> GivenNFramesHavePassed(int frames)
         {
             float deltaTime = 0;
-            for(int i = 0; i < frames; i++)
+            for (int i = 0; i < frames; i++)
             {
                 await UniTask.Yield();
                 deltaTime += Time.deltaTime;
@@ -31,13 +34,16 @@ namespace RxClock.Tests.PlayMode.Clock
             return deltaTime;
         }
 
-        private void WhenStopwatchIsStarted() => stopwatch.Start();
+        private void WhenStopwatchIsStarted()
+        {
+            stopwatch.Start();
+        }
 
         private void ThenCounterShouldBe(float deltaTime)
         {
             stopwatch.TimeCounter.Value
                 .Should()
-                .BeCloseTo(TimeSpan.FromSeconds(deltaTime), precision:acceptableError);
+                .BeCloseTo(TimeSpan.FromSeconds(deltaTime), acceptableError);
         }
     }
 }

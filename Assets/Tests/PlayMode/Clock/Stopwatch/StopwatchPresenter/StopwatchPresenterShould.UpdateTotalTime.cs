@@ -10,11 +10,11 @@ namespace RxClock.Tests.PlayMode.Clock
         public void UpdateTimeWhenStopwatchValueChanges()
         {
             TimeSpan newTime = GivenStopwatchCounterValueChanged(TimeSpan.FromMinutes(1));
-            
+
             ThenTimeTextShouldBe(newTime);
-            
+
             newTime = GivenStopwatchCounterValueChanged(TimeSpan.FromMinutes(2));
-            
+
             ThenTimeTextShouldBe(newTime);
         }
 

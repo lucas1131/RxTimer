@@ -6,13 +6,14 @@ namespace RxClock.Clock
 {
     public class Timer : ITimer, IDisposable
     {
-        public ReactiveProperty<TimeSpan> RemainingTimeSeconds { get; } = new ();
-        public ReactiveProperty<bool> IsRunning { get; private set; } = new ();
+        private readonly TimeSpan
+            interval = TimeSpan
+                .FromSeconds(1); // Granularity here is only 1 second but could also be every frame with EveryUpdate
 
-        private IDisposable updateRemainingTimeObservable;
-        private readonly TimeSpan interval = TimeSpan.FromSeconds(1); // Granularity here is only 1 second but could also be every frame with EveryUpdate
         private readonly ILogger logger;
         private readonly IMessageBroker messageBroker;
+
+        private IDisposable updateRemainingTimeObservable;
 
         [Inject]
         public Timer(ILogger logger, IMessageBroker messageBroker)
@@ -20,7 +21,16 @@ namespace RxClock.Clock
             this.logger = logger;
             this.messageBroker = messageBroker;
         }
-        
+
+        public void Dispose()
+        {
+            updateRemainingTimeObservable?.Dispose();
+            RemainingTimeSeconds?.Dispose();
+        }
+
+        public ReactiveProperty<TimeSpan> RemainingTimeSeconds { get; } = new();
+        public ReactiveProperty<bool> IsRunning { get; } = new();
+
         public void Start(TimeSpan timeSpan)
         {
             if (IsRunning.Value)
@@ -34,18 +44,21 @@ namespace RxClock.Clock
                 logger.Info("Trying to start timer with 0 seconds, ignoring");
                 return;
             }
-            
+
             logger.Info("Starting timer");
-            
+
             RemainingTimeSeconds.Value = timeSpan;
-            
+
             IsRunning.Value = true;
             updateRemainingTimeObservable = Observable
-                .Interval(interval) 
+                .Interval(interval)
                 .Subscribe(_ => UpdateTimer());
         }
 
-        public void Resume() => Start(RemainingTimeSeconds.Value);
+        public void Resume()
+        {
+            Start(RemainingTimeSeconds.Value);
+        }
 
         public void Pause()
         {
@@ -55,7 +68,10 @@ namespace RxClock.Clock
             IsRunning.Value = false;
         }
 
-        public void Stop() => Pause();
+        public void Stop()
+        {
+            Pause();
+        }
 
         public void Reset()
         {
@@ -72,12 +88,6 @@ namespace RxClock.Clock
                 Pause();
                 messageBroker.Publish(new TimerFinishedMessage(TimerFinishedMessage.Reason.Completed));
             }
-        }
-        
-        public void Dispose()
-        {
-            updateRemainingTimeObservable?.Dispose();
-            RemainingTimeSeconds?.Dispose();
         }
     }
 }

@@ -12,10 +12,10 @@ namespace RxClock.Clock
 
             (string, int) ret = digits.Length switch
             {
-                (   0) => ("", 0),
+                0 => ("", 0),
                 (<= 2) => (digits, 0),
                 (<= 4) => (digits.Insert(2, ":"), 1),
-                (   _) => (digits.Insert(2, ":").Insert(5, ":"), 2)
+                (_) => (digits.Insert(2, ":").Insert(5, ":"), 2)
             };
 
             return ret;
@@ -23,11 +23,8 @@ namespace RxClock.Clock
 
         public string CommitFormat(string text)
         {
-            if (text == string.Empty)
-            {
-                return text;
-            }
-            
+            if (text == string.Empty) return text;
+
             string[] parts = text.Split(":");
 
             // Normalize string format
@@ -35,29 +32,21 @@ namespace RxClock.Clock
             {
                 text = text.Length == 1 ? $"{text}0:00:00" : $"{text}:00:00";
                 return text; // HH is uncapped
-            } 
-            
-            else if (parts.Length == 2)
-            {
-                text = text.Length == 4 ? $"{text}0:00" : $"{text}:00";
-            } 
-            else if (text.Length == 7)
-            {
-                text = $"{text}0";
             }
-            
+
+            if (parts.Length == 2)
+                text = text.Length == 4 ? $"{text}0:00" : $"{text}:00";
+            else if (text.Length == 7) text = $"{text}0";
+
             // Redo split with proper format
             parts = text.Split(":");
 
-            StringBuilder cappedTime = new (string.Concat(text.Take(3))); // HH:
+            StringBuilder cappedTime = new(string.Concat(text.Take(3))); // HH:
             List<string> timeParts = new(2);
-            foreach (string part in parts.Skip(1))
-            {
-                timeParts.Add(CapMinutesAndSeconds(part));
-            }
-            
+            foreach (string part in parts.Skip(1)) timeParts.Add(CapMinutesAndSeconds(part));
+
             cappedTime.AppendJoin(":", timeParts);
-            return cappedTime.ToString(); 
+            return cappedTime.ToString();
         }
 
         private static string CapMinutesAndSeconds(string text)
@@ -69,6 +58,5 @@ namespace RxClock.Clock
                 _ => text
             };
         }
-        
     }
 }

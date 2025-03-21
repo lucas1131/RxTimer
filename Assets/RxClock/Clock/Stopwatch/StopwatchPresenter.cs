@@ -11,33 +11,49 @@ namespace RxClock.Clock
 {
     public class StopwatchPresenter : MonoBehaviour
     {
-        [SerializeField, InjectOptional(Id="stopwatch_elapsedTimeText")] private TMP_Text elapsedTimeText;
-        [SerializeField, InjectOptional(Id="stopwatch_scrollViewContentHolder")] private GameObject scrollViewContent;
-        [SerializeField, InjectOptional(Id="stopwatch_scrollRect")] private ScrollRect scrollRect;
-        
-        [Header("Buttons")]
-        [SerializeField, InjectOptional(Id="stopwatch_startButton")] private Button startButton;
-        [SerializeField, InjectOptional(Id="stopwatch_stopButton")] private Button stopButton;
-        [SerializeField, Tooltip("Right button")] private Image startButtonIcon;
-        [SerializeField, Tooltip("Left button")] private Image stopButtonIcon;
-        
-        [Header("Icons")]
-        [SerializeField] private Sprite startIcon;
+        [SerializeField] [InjectOptional(Id = "stopwatch_elapsedTimeText")]
+        private TMP_Text elapsedTimeText;
+
+        [SerializeField] [InjectOptional(Id = "stopwatch_scrollViewContentHolder")]
+        private GameObject scrollViewContent;
+
+        [SerializeField] [InjectOptional(Id = "stopwatch_scrollRect")]
+        private ScrollRect scrollRect;
+
+        [Header("Buttons")] [SerializeField] [InjectOptional(Id = "stopwatch_startButton")]
+        private Button startButton;
+
+        [SerializeField] [InjectOptional(Id = "stopwatch_stopButton")]
+        private Button stopButton;
+
+        [SerializeField] [Tooltip("Right button")]
+        private Image startButtonIcon;
+
+        [SerializeField] [Tooltip("Left button")]
+        private Image stopButtonIcon;
+
+        [Header("Icons")] [SerializeField] private Sprite startIcon;
+
         [SerializeField] private Sprite stopIcon;
         [SerializeField] private Sprite pauseIcon;
         [SerializeField] private Sprite lapIcon;
-        
-        private ILogger logger;
-        private IStopwatch stopwatch;
-        private LapEntryPresenter lapEntryPrefab;
-        private ITimerInputFormatter timerFormatter;
         private TimeSpan elapsedTime;
         private bool isStopwatchRunning;
-        
+        private LapEntryPresenter lapEntryPrefab;
+
+        private ILogger logger;
+        private IDisposable onLapObservable;
+        private IDisposable onStopwatchStateChangedObservable;
+        private IStopwatch stopwatch;
+        private ITimerInputFormatter timerFormatter;
+
         // To have a proper Presenter - View layer separation, all these disposables' subscribes should be happening on the View script and this presenter just need to expose the events that triggers them 
         private IDisposable updateStopwatchObservable;
-        private IDisposable onStopwatchStateChangedObservable;
-        private IDisposable onLapObservable;
+
+        private void OnDestroy()
+        {
+            Dispose();
+        }
 
         [Inject]
         public void Initialize(ILogger logger, IStopwatch stopwatch, LapEntryPresenter lapEntryPrefab)
@@ -45,7 +61,7 @@ namespace RxClock.Clock
             this.logger = logger;
             this.stopwatch = stopwatch;
             this.lapEntryPrefab = lapEntryPrefab;
-            
+
             startButtonIcon ??= startButton.GetComponent<Image>();
             stopButtonIcon ??= stopButton.GetComponent<Image>();
 
@@ -59,11 +75,6 @@ namespace RxClock.Clock
             onLapObservable = stopwatch.Laps
                 .ObserveAdd()
                 .Subscribe(OnStopwatchLap);
-        }
-        
-        private void OnDestroy()
-        {
-            Dispose();
         }
 
         private void Dispose()
@@ -85,7 +96,7 @@ namespace RxClock.Clock
             {
                 startButtonIcon.sprite = pauseIcon;
                 stopButtonIcon.sprite = lapIcon;
-                
+
                 // When running, left button is STOP and right button is PAUSE
                 ReplaceButtonListener(startButton, stopwatch.Pause);
                 ReplaceButtonListener(stopButton, stopwatch.Lap);
@@ -94,7 +105,7 @@ namespace RxClock.Clock
             {
                 startButtonIcon.sprite = startIcon;
                 stopButtonIcon.sprite = stopIcon;
-                
+
                 // When NOT running, left button is RESET and right button is START
                 ReplaceButtonListener(startButton, StartStopwatch);
                 ReplaceButtonListener(stopButton, StopStopwatch);
@@ -134,17 +145,14 @@ namespace RxClock.Clock
         {
             // This needs to happen after one frame so the scroll rect layout is properly updated after entry instantiation
             await UniTask.NextFrame();
-            scrollRect.verticalNormalizedPosition = 0f; 
+            scrollRect.verticalNormalizedPosition = 0f;
         }
 
         private void ClearScrollViewContent()
         {
             // If we expect to have a lot of laps, this should be changed to have an object pool and not re-create and destroy all objects everytime
-            foreach (Transform child in scrollViewContent.transform)
-            {
-                Destroy(child.gameObject);
-            }
-            
+            foreach (Transform child in scrollViewContent.transform) Destroy(child.gameObject);
+
             scrollRect.verticalNormalizedPosition = 1f;
         }
     }

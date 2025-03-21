@@ -9,15 +9,18 @@ namespace RxClock.Tests.PlayMode.Clock
     public partial class StopwatchShould
     {
         [UnityTest]
-        public IEnumerator ResetCounterWhenStopIsCalled() => UniTask.ToCoroutine(async () =>
+        public IEnumerator ResetCounterWhenStopIsCalled()
         {
-            await GivenStopwatchHasStarted();
-            await GivenNFramesHavePassed(1);
+            return UniTask.ToCoroutine(async () =>
+            {
+                await GivenStopwatchHasStarted();
+                await GivenNFramesHavePassed(1);
 
-            WhenStopping();
+                WhenStopping();
 
-            ThenCounterShouldBeZero();
-        });
+                ThenCounterShouldBeZero();
+            });
+        }
 
         private async UniTask GivenStopwatchHasStarted()
         {
@@ -29,7 +32,10 @@ namespace RxClock.Tests.PlayMode.Clock
             // behaviours to tests.
         }
 
-        private void WhenStopping() => stopwatch.Stop();
+        private void WhenStopping()
+        {
+            stopwatch.Stop();
+        }
 
         private void ThenCounterShouldBeZero()
         {

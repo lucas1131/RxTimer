@@ -10,11 +10,11 @@ namespace RxClock.Tests.PlayMode.Clock
         public void UpdateTimeWhenClockValueChanges()
         {
             DateTime newTime = GivenClockNowValueChanged(DateTime.Now.AddMinutes(1));
-            
+
             ThenTimeTextShouldBe(newTime);
-            
+
             newTime = GivenClockNowValueChanged(DateTime.Now.AddMinutes(2));
-            
+
             ThenTimeTextShouldBe(newTime);
         }
 

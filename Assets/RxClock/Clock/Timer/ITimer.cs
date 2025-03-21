@@ -7,7 +7,7 @@ namespace RxClock.Clock
     {
         ReactiveProperty<TimeSpan> RemainingTimeSeconds { get; }
         ReactiveProperty<bool> IsRunning { get; }
-        
+
         void Start(TimeSpan seconds);
         void Resume();
         void Pause();

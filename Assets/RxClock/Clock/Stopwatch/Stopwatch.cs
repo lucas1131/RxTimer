@@ -7,15 +7,12 @@ namespace RxClock.Clock
 {
     public class Stopwatch : IStopwatch, IDisposable
     {
-        public IReadOnlyReactiveProperty<TimeSpan> TimeCounter => timeCounter;
-        public IReadOnlyReactiveCollection<TimeSpan> Laps => laps;
-        public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
-        
-        private readonly ReactiveProperty<TimeSpan> timeCounter= new ();
-        private readonly ReactiveCollection<TimeSpan> laps = new ();
-        private readonly ReactiveProperty<bool> isRunning = new ();
         private readonly ReactiveProperty<TimeSpan> currentLapStart = new();
+        private readonly ReactiveProperty<bool> isRunning = new();
+        private readonly ReactiveCollection<TimeSpan> laps = new();
         private readonly ILogger logger;
+
+        private readonly ReactiveProperty<TimeSpan> timeCounter = new();
         private IDisposable updateTimeCounterObservable;
 
         [Inject]
@@ -23,7 +20,16 @@ namespace RxClock.Clock
         {
             this.logger = logger;
         }
-        
+
+        public void Dispose()
+        {
+            updateTimeCounterObservable?.Dispose();
+        }
+
+        public IReadOnlyReactiveProperty<TimeSpan> TimeCounter => timeCounter;
+        public IReadOnlyReactiveCollection<TimeSpan> Laps => laps;
+        public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
+
         public void Start()
         {
             if (isRunning.Value)
@@ -31,18 +37,21 @@ namespace RxClock.Clock
                 logger.Info("Start called when stopwatch is already running");
                 return;
             }
-            
+
             logger.Info("Starting stopwatch");
-            
+
             isRunning.Value = true;
-            
+
             Dispose();
             updateTimeCounterObservable = Observable
-                .EveryUpdate() 
+                .EveryUpdate()
                 .Subscribe(_ => UpdateCounter());
         }
 
-        public void Resume() => Start();
+        public void Resume()
+        {
+            Start();
+        }
 
         public void Pause()
         {
@@ -68,15 +77,10 @@ namespace RxClock.Clock
             currentLapStart.Value = TimeCounter.Value;
             logger.Info($@"Stopwatch lap: {lapTime:hh\:mm\:ss}");
         }
-        
+
         private void UpdateCounter()
         {
             timeCounter.Value += TimeSpan.FromSeconds(Time.deltaTime);
-        }
-
-        public void Dispose()
-        {
-            updateTimeCounterObservable?.Dispose();
         }
     }
 }

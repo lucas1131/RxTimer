@@ -11,14 +11,19 @@ namespace RxClock.Tests.PlayMode.Clock
 {
     public partial class StopwatchPresenterShould : ZenjectIntegrationTestFixture
     {
-        [Inject] private StopwatchMock stopwatchMock;
-        [Inject] private StopwatchPresenter stopwatchPresenter; 
+        [Inject(Id = "stopwatch_elapsedTimeText")]
+        private TMP_Text elapsedTimeText;
+
         [Inject] private LapEntryPresenter lapEntryPrefab;
-        [Inject(Id = "stopwatch_elapsedTimeText")] private TMP_Text elapsedTimeText;
-        [Inject(Id = "stopwatch_stopButton")] private Button stopButton;
         [Inject(Id = "stopwatch_scrollRect")] private ScrollRect scrollRect;
-        [Inject(Id = "stopwatch_scrollViewContentHolder")] private GameObject scrollViewContentHolder;
-        
+
+        [Inject(Id = "stopwatch_scrollViewContentHolder")]
+        private GameObject scrollViewContentHolder;
+
+        [Inject(Id = "stopwatch_stopButton")] private Button stopButton;
+        [Inject] private StopwatchMock stopwatchMock;
+        [Inject] private StopwatchPresenter stopwatchPresenter;
+
         [SetUp]
         public void SetUp()
         {
@@ -34,9 +39,9 @@ namespace RxClock.Tests.PlayMode.Clock
             InstallScrollRect("stopwatch_scrollRect");
             InstallLapEntryPresenter();
             InstallPresenter();
-            
+
             Container.Inject(this);
-            
+
             PostInstall();
 
             ResolveDependencies();
@@ -50,7 +55,7 @@ namespace RxClock.Tests.PlayMode.Clock
 
         private void InstallButton(string id)
         {
-            GameObject buttonObject = new ();
+            GameObject buttonObject = new();
             buttonObject.AddComponent<Image>(); // Buttons created via editor always have an Image attached
             Button button = buttonObject.AddComponent<Button>();
             GenericInstallWithId(id, button);
@@ -66,7 +71,7 @@ namespace RxClock.Tests.PlayMode.Clock
             ScrollRect newScrollRect = new GameObject().AddComponent<ScrollRect>();
             GenericInstallWithId(id, newScrollRect);
         }
-        
+
         private void GenericInstallWithId<T>(string id, T instance)
         {
             Container
@@ -104,15 +109,15 @@ namespace RxClock.Tests.PlayMode.Clock
         private void ResolveScrollRect()
         {
             scrollRect = Container.ResolveId<ScrollRect>("stopwatch_scrollRect");
-            
+
             GameObject viewport = new();
             RectTransform viewportRect = viewport.AddComponent<RectTransform>();
             viewportRect.SetParent(scrollRect.transform);
-            
+
             GameObject scrollContent = Container.ResolveId<GameObject>("stopwatch_scrollViewContentHolder");
             RectTransform contentTransform = scrollContent.AddComponent<RectTransform>();
             contentTransform.SetParent(viewportRect.transform);
-            
+
             scrollRect.viewport = viewportRect;
             scrollRect.content = contentTransform;
             scrollRect.vertical = true;
@@ -124,31 +129,46 @@ namespace RxClock.Tests.PlayMode.Clock
             stopwatchPresenter = Container.Resolve<StopwatchPresenter>();
             Container.Inject(stopwatchPresenter);
             stopwatchPresenter.Initialize(
-                Container.Resolve<ILogger>(), 
+                Container.Resolve<ILogger>(),
                 Container.Resolve<IStopwatch>(),
                 Container.Resolve<LapEntryPresenter>());
         }
 
-        class StopwatchMock : IStopwatch
+        private class StopwatchMock : IStopwatch
         {
-            public IReadOnlyReactiveProperty<TimeSpan> TimeCounter => mockedTimeCounter;
-            public IReadOnlyReactiveCollection<TimeSpan> Laps  => mockedLaps;
-            public IReadOnlyReactiveProperty<bool> IsRunning => mockedIsRunning;
-            
             public ReactiveProperty<TimeSpan> mockedTimeCounter { get; } = new();
             public ReactiveCollection<TimeSpan> mockedLaps { get; } = new();
             public ReactiveProperty<bool> mockedIsRunning { get; } = new();
-            
-            public void Start() { }
-            public void Resume() { }
-            public void Pause() { }
-            public void Stop() { }
-            public void Lap() { }
+            public IReadOnlyReactiveProperty<TimeSpan> TimeCounter => mockedTimeCounter;
+            public IReadOnlyReactiveCollection<TimeSpan> Laps => mockedLaps;
+            public IReadOnlyReactiveProperty<bool> IsRunning => mockedIsRunning;
+
+            public void Start()
+            {
+            }
+
+            public void Resume()
+            {
+            }
+
+            public void Pause()
+            {
+            }
+
+            public void Stop()
+            {
+            }
+
+            public void Lap()
+            {
+            }
         }
 
         public class StubLapEntryPresenterMock : LapEntryPresenter
         {
-            public override void Setup(int index, TimeSpan lapTime, TimeSpan elapsedTime) { }
+            public override void Setup(int index, TimeSpan lapTime, TimeSpan elapsedTime)
+            {
+            }
         }
     }
 }
