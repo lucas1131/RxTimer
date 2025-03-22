@@ -1,4 +1,5 @@
 using System;
+using RxClock.AudioManager;
 using RxClock.Clock;
 using UnityEngine;
 using Zenject;
@@ -12,9 +13,12 @@ namespace Installers
         
         public override void InstallBindings()
         {
-            // It would be better to have an audio mixer that could be globally injected instead of audio source, this
-            // will cause a bunch of injection conflicts when multiple scripts need to play audio
-            Container.Bind<AudioSource>().FromInstance(audioSource).AsSingle(); 
+            Container
+                .BindInterfacesAndSelfTo<AudioManager>()
+                .FromNew()
+                .AsSingle()
+                .WithArguments(audioSource);
+            
             Container
                 .Bind<AudioClip>()
                 .WithId("timer_finishedAlert")

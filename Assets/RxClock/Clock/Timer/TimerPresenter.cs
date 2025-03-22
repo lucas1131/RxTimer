@@ -1,5 +1,6 @@
 using System;
 using ModestTree;
+using RxClock.AudioManager;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace RxClock.Clock
         private TimeSpan originalTimeToCount;
         private ITimer timer;
         private ITimerInputFormatter timerFormatter;
-        private AudioSource audioSource;
+        private IAudioManager audioSource;
         private AudioClip timerFinishedAlert;
         
         // To have a proper Presenter - View layer separation, all these disposables' subscribes should be happening on the View script and this presenter just need to expose the events that triggers them 
@@ -50,7 +51,7 @@ namespace RxClock.Clock
             ITimer timer, 
             ITimerInputFormatter timerFormatter,
             IMessageBroker messageBroker,
-            AudioSource audioSource,
+            IAudioManager audioSource,
             [Inject(Id="timer_finishedAlert")] AudioClip timerFinishedAlert)
         {
             this.logger = logger;
