@@ -1,7 +1,5 @@
 using RxClock.Clock;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public class StopwatchPresenterInstaller : MonoInstaller
