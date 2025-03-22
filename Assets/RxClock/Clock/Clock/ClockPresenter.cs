@@ -39,7 +39,7 @@ namespace RxClock.Clock
             timeZoneText.text = $"{offsetText}H {timeZoneName}";
         }
 
-        public void UpdateTime(DateTime time)
+        private void UpdateTime(DateTime time)
         {
             timeText.text = time.ToString("HH:mm:ss");
         }
