@@ -1,5 +1,6 @@
 using System;
 using ModestTree;
+using RxClock.AudioManager;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -11,11 +12,11 @@ namespace RxClock.Clock
 {
     public class TimerPresenter : MonoBehaviour
     {
-        [SerializeField] private TMP_InputField inputField;
+        [SerializeField, InjectOptional(Id="timer_inputField")] private TMP_InputField inputField;
 
         [Header("Buttons")] 
-        [SerializeField] private Button startButton;
-        [SerializeField] private Button stopButton;
+        [SerializeField, InjectOptional(Id="timer_startButton")] private Button startButton;
+        [SerializeField, InjectOptional(Id="timer_stopButton")] private Button stopButton;
 
         [SerializeField, Tooltip("Right button")] private Image startButtonIcon;
         [SerializeField, Tooltip("Left button")] private Image stopButtonIcon;
@@ -31,7 +32,7 @@ namespace RxClock.Clock
         private TimeSpan originalTimeToCount;
         private ITimer timer;
         private ITimerInputFormatter timerFormatter;
-        private AudioSource audioSource;
+        private IAudioManager audioSource;
         private AudioClip timerFinishedAlert;
         
         // To have a proper Presenter - View layer separation, all these disposables' subscribes should be happening on the View script and this presenter just need to expose the events that triggers them 
@@ -39,6 +40,7 @@ namespace RxClock.Clock
         private IDisposable onTimerStateChangedObservable;
         private IDisposable onValueChangedObservable;
         private IDisposable onCommitObservable;
+        private IDisposable onTimerFinished;
 
         private void OnDestroy()
         {
@@ -50,7 +52,7 @@ namespace RxClock.Clock
             ITimer timer, 
             ITimerInputFormatter timerFormatter,
             IMessageBroker messageBroker,
-            AudioSource audioSource,
+            IAudioManager audioSource,
             [Inject(Id="timer_finishedAlert")] AudioClip timerFinishedAlert)
         {
             this.logger = logger;
@@ -58,10 +60,12 @@ namespace RxClock.Clock
             this.timerFormatter = timerFormatter;
             this.audioSource = audioSource;
             this.timerFinishedAlert = timerFinishedAlert;
+            
+            startButtonIcon ??= startButton.GetComponent<Image>();
+            stopButtonIcon ??= stopButton.GetComponent<Image>();
 
             Dispose();
-            updateTimerObservable = timer.RemainingTimeSeconds
-                // .ObserveEveryValueChanged(property => )
+            updateTimerObservable = timer.RemainingTime
                 .Subscribe(UpdateTimer);
 
             onTimerStateChangedObservable = timer.IsRunning
@@ -76,7 +80,7 @@ namespace RxClock.Clock
                 .AsObservable()
                 .Subscribe(OnCommitFormat);
 
-            messageBroker
+            onTimerFinished = messageBroker
                 .Receive<TimerFinishedMessage>()
                 .Subscribe(OnTimerFinished);
         }
@@ -87,13 +91,17 @@ namespace RxClock.Clock
             onTimerStateChangedObservable?.Dispose();
             onValueChangedObservable?.Dispose();
             onCommitObservable?.Dispose();
+            onTimerFinished?.Dispose();
         }
 
         private void OnEditFormat(string text)
         {
             (string format, int caretOffset) = timerFormatter.EditFormat(text);
             inputField.text = format;
-            if (inputField.isFocused) inputField.stringPosition += caretOffset;
+            if (inputField.isFocused)
+            {
+                inputField.stringPosition += caretOffset;
+            }
         }
 
         private void OnCommitFormat(string text)
@@ -171,7 +179,6 @@ namespace RxClock.Clock
         private void OnTimerFinished(TimerFinishedMessage message)
         {
             SetState(false);
-            // inputField.text = "00:00:00"; 
             if (message.FinishReason == TimerFinishedMessage.Reason.Completed)
             {
                 audioSource.PlayOneShot(timerFinishedAlert);

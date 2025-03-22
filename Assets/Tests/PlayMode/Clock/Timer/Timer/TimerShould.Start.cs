@@ -35,7 +35,7 @@ namespace RxClock.Tests.PlayMode.Clock
 
         private void ThenCounterShouldBe(TimeSpan time)
         {
-            timer.RemainingTimeSeconds.Value
+            timer.RemainingTime.Value
                 .Should()
                 .BeCloseTo(time, acceptableError);
         }

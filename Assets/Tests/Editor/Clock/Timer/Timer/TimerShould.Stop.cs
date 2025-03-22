@@ -42,7 +42,7 @@ namespace RxClock.Tests.Editor.Clock
 
         private void ThenTimerShouldBe(TimeSpan timeToCount)
         {
-            timer.RemainingTimeSeconds.Value.Should().Be(timeToCount);
+            timer.RemainingTime.Value.Should().Be(timeToCount);
         }
     }
 }

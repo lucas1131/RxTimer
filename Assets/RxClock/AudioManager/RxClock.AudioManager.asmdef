@@ -1,0 +1,14 @@
+{
+    "name": "RxClock.AudioManager",
+    "rootNamespace": "RxClock.AudioManager",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

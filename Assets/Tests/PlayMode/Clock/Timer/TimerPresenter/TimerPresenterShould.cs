@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using RxClock.AudioManager;
 using RxClock.Clock;
 using TMPro;
 using UniRx;
@@ -11,16 +12,12 @@ namespace RxClock.Tests.PlayMode.Clock
 {
     public partial class TimerPresenterShould : ZenjectIntegrationTestFixture
     {
-        [Inject(Id = "timer_elapsedTimeText")]
-        private TMP_Text elapsedTimeText;
-
-        [Inject] private LapEntryPresenter lapEntryPrefab;
-        [Inject(Id = "timer_scrollRect")] private ScrollRect scrollRect;
-
-        [Inject(Id = "timer_scrollViewContentHolder")]
-        private GameObject scrollViewContentHolder;
-
-        [Inject(Id = "timer_stopButton")] private Button stopButton;
+        [Inject(Id="timer_inputField")] private TMP_InputField inputField;
+        [Inject(Id="timer_startButton")] private Button startButton;
+        [Inject(Id="timer_stopButton")] private Button stopButton;
+        [Inject] private IMessageBroker messageBroker;
+        
+        [Inject] private IAudioManager audioManagerMock;
         [Inject] private TimerMock timerMock;
         [Inject] private TimerPresenter timerPresenter;
 
@@ -30,10 +27,12 @@ namespace RxClock.Tests.PlayMode.Clock
             PreInstall();
 
             Container.BindInterfacesAndSelfTo<TimerMock>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TimerInputFormatter>().AsSingle();
             Container.Bind<ILogger>().FromSubstitute().AsSingle();
-            Container.Bind<AudioSource>().FromNewComponentOnNewGameObject().AsSingle();
+            Container.Bind<IMessageBroker>().FromInstance(MessageBroker.Default).AsSingle();
+            Container.Bind<IAudioManager>().FromSubstitute().AsSingle();
 
-            InstallText("timer_elapsedTimeText");
+            InstallInputField("timer_inputField");
             InstallButton("timer_startButton");
             InstallButton("timer_stopButton");
             InstallAudioClip("timer_finishedAlert");
@@ -46,13 +45,7 @@ namespace RxClock.Tests.PlayMode.Clock
 
             ResolveDependencies();
         }
-
-        private void InstallText(string id)
-        {
-            TMP_Text text = new GameObject().AddComponent<TextMeshProUGUI>();
-            GenericInstallWithId(id, text);
-        }
-
+        
         private void InstallButton(string id)
         {
             GameObject buttonObject = new();
@@ -61,9 +54,18 @@ namespace RxClock.Tests.PlayMode.Clock
             GenericInstallWithId(id, button);
         }
 
+        private void InstallInputField(string id)
+        {
+            GameObject inputFieldObject = new();
+            TMP_Text text = inputFieldObject.AddComponent<TextMeshProUGUI>();
+            TMP_InputField input = inputFieldObject.AddComponent<TMP_InputField>();
+            input.textComponent = text;
+            GenericInstallWithId(id, input);
+        }
+        
         private void InstallAudioClip(string id)
         {
-            AudioClip clip = AudioClip.Create(id, 10, 10, 10, false);
+            AudioClip clip = AudioClip.Create(id, 1, 1, 1000, false);
             GenericInstallWithId(id, clip);
         }
 
@@ -90,16 +92,16 @@ namespace RxClock.Tests.PlayMode.Clock
                 Container.Resolve<ITimer>(),
                 Container.Resolve<ITimerInputFormatter>(),
                 Container.Resolve<IMessageBroker>(),
-                Container.Resolve<AudioSource>(),
-                Container.Resolve<AudioClip>());
+                Container.Resolve<IAudioManager>(),
+                Container.ResolveId<AudioClip>("timer_finishedAlert"));
         }
 
         private class TimerMock : ITimer
         {
-            public IReadOnlyReactiveProperty<TimeSpan> RemainingTimeSeconds => mockedRemainingTimeSeconds;
+            public IReadOnlyReactiveProperty<TimeSpan> RemainingTime => mockedRemainingTime;
             public IReadOnlyReactiveProperty<bool> IsRunning => mockedIsRunning;
 
-            public ReactiveProperty<TimeSpan> mockedRemainingTimeSeconds = new();
+            public ReactiveProperty<TimeSpan> mockedRemainingTime = new();
             public ReactiveProperty<bool> mockedIsRunning = new();
             
             public void Start(TimeSpan seconds) { }

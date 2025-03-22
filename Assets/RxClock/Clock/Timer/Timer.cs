@@ -6,7 +6,7 @@ namespace RxClock.Clock
 {
     public class Timer : ITimer, IDisposable
     {
-        public IReadOnlyReactiveProperty<TimeSpan> RemainingTimeSeconds => remainingTimeSeconds;
+        public IReadOnlyReactiveProperty<TimeSpan> RemainingTime => remainingTimeSeconds;
         public IReadOnlyReactiveProperty<bool> IsRunning => isRunning;
         
         private readonly ReactiveProperty<TimeSpan> remainingTimeSeconds = new();
@@ -52,7 +52,7 @@ namespace RxClock.Clock
 
             isRunning.Value = true;
             
-            Dispose();
+            updateRemainingTimeObservable?.Dispose();
             updateRemainingTimeObservable = Observable
                 .Interval(interval)
                 .Subscribe(_ => UpdateTimer());
@@ -86,7 +86,7 @@ namespace RxClock.Clock
         private void UpdateTimer()
         {
             remainingTimeSeconds.Value -= interval;
-            if (RemainingTimeSeconds.Value <= TimeSpan.Zero)
+            if (RemainingTime.Value <= TimeSpan.Zero)
             {
                 Pause();
                 messageBroker.Publish(new TimerFinishedMessage(TimerFinishedMessage.Reason.Completed));
