@@ -20,13 +20,13 @@ namespace RxClock.Tests.PlayMode.Clock
 
         private TimeSpan GivenTimerCounterValueChanged(TimeSpan time)
         {
-            timerMock.mockedRemainingTimeSeconds.Value = time;
+            timerMock.mockedRemainingTime.Value = time;
             return time;
         }
 
         private void ThenTimeTextShouldBe(TimeSpan expected)
         {
-            timerText.text.Should().Be(expected.ToString(@"hh\:mm\:ss\.fff"));
+            inputField.text.Should().Be(expected.ToString(@"hh\:mm\:ss"));
         }
     }
 }

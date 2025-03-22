@@ -32,7 +32,7 @@ namespace RxClock.Tests.Editor.Clock
 
         private void ThenRemainingTimeShouldBe(TimeSpan expected)
         {
-            timer.RemainingTimeSeconds.Value.Should().Be(expected);
+            timer.RemainingTime.Value.Should().Be(expected);
         }
     }
 }

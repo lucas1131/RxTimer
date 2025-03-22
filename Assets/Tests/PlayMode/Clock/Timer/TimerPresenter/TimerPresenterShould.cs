@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using RxClock.AudioManager;
 using RxClock.Clock;
 using TMPro;
 using UniRx;
@@ -14,7 +15,9 @@ namespace RxClock.Tests.PlayMode.Clock
         [Inject(Id="timer_inputField")] private TMP_InputField inputField;
         [Inject(Id="timer_startButton")] private Button startButton;
         [Inject(Id="timer_stopButton")] private Button stopButton;
+        [Inject] private IMessageBroker messageBroker;
         
+        [Inject] private IAudioManager audioManagerMock;
         [Inject] private TimerMock timerMock;
         [Inject] private TimerPresenter timerPresenter;
 
@@ -24,8 +27,10 @@ namespace RxClock.Tests.PlayMode.Clock
             PreInstall();
 
             Container.BindInterfacesAndSelfTo<TimerMock>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TimerInputFormatter>().AsSingle();
             Container.Bind<ILogger>().FromSubstitute().AsSingle();
-            Container.Bind<AudioSource>().FromNewComponentOnNewGameObject().AsSingle();
+            Container.Bind<IMessageBroker>().FromInstance(MessageBroker.Default).AsSingle();
+            Container.Bind<IAudioManager>().FromSubstitute().AsSingle();
 
             InstallInputField("timer_inputField");
             InstallButton("timer_startButton");
@@ -60,7 +65,7 @@ namespace RxClock.Tests.PlayMode.Clock
         
         private void InstallAudioClip(string id)
         {
-            AudioClip clip = AudioClip.Create(id, 10, 10, 10, false);
+            AudioClip clip = AudioClip.Create(id, 1, 1, 1000, false);
             GenericInstallWithId(id, clip);
         }
 
@@ -87,16 +92,16 @@ namespace RxClock.Tests.PlayMode.Clock
                 Container.Resolve<ITimer>(),
                 Container.Resolve<ITimerInputFormatter>(),
                 Container.Resolve<IMessageBroker>(),
-                Container.Resolve<AudioSource>(),
-                Container.Resolve<AudioClip>());
+                Container.Resolve<IAudioManager>(),
+                Container.ResolveId<AudioClip>("timer_finishedAlert"));
         }
 
         private class TimerMock : ITimer
         {
-            public IReadOnlyReactiveProperty<TimeSpan> RemainingTimeSeconds => mockedRemainingTimeSeconds;
+            public IReadOnlyReactiveProperty<TimeSpan> RemainingTime => mockedRemainingTime;
             public IReadOnlyReactiveProperty<bool> IsRunning => mockedIsRunning;
 
-            public ReactiveProperty<TimeSpan> mockedRemainingTimeSeconds = new();
+            public ReactiveProperty<TimeSpan> mockedRemainingTime = new();
             public ReactiveProperty<bool> mockedIsRunning = new();
             
             public void Start(TimeSpan seconds) { }

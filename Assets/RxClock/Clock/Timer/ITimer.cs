@@ -5,7 +5,7 @@ namespace RxClock.Clock
 {
     public interface ITimer
     {
-        IReadOnlyReactiveProperty<TimeSpan> RemainingTimeSeconds { get; }
+        IReadOnlyReactiveProperty<TimeSpan> RemainingTime { get; }
         IReadOnlyReactiveProperty<bool> IsRunning { get; }
 
         void Start(TimeSpan seconds);

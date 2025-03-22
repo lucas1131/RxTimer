@@ -40,6 +40,7 @@ namespace RxClock.Clock
         private IDisposable onTimerStateChangedObservable;
         private IDisposable onValueChangedObservable;
         private IDisposable onCommitObservable;
+        private IDisposable onTimerFinished;
 
         private void OnDestroy()
         {
@@ -64,7 +65,7 @@ namespace RxClock.Clock
             stopButtonIcon ??= stopButton.GetComponent<Image>();
 
             Dispose();
-            updateTimerObservable = timer.RemainingTimeSeconds
+            updateTimerObservable = timer.RemainingTime
                 .Subscribe(UpdateTimer);
 
             onTimerStateChangedObservable = timer.IsRunning
@@ -79,7 +80,7 @@ namespace RxClock.Clock
                 .AsObservable()
                 .Subscribe(OnCommitFormat);
 
-            messageBroker
+            onTimerFinished = messageBroker
                 .Receive<TimerFinishedMessage>()
                 .Subscribe(OnTimerFinished);
         }
@@ -90,13 +91,17 @@ namespace RxClock.Clock
             onTimerStateChangedObservable?.Dispose();
             onValueChangedObservable?.Dispose();
             onCommitObservable?.Dispose();
+            onTimerFinished?.Dispose();
         }
 
         private void OnEditFormat(string text)
         {
             (string format, int caretOffset) = timerFormatter.EditFormat(text);
             inputField.text = format;
-            if (inputField.isFocused) inputField.stringPosition += caretOffset;
+            if (inputField.isFocused)
+            {
+                inputField.stringPosition += caretOffset;
+            }
         }
 
         private void OnCommitFormat(string text)
@@ -174,7 +179,6 @@ namespace RxClock.Clock
         private void OnTimerFinished(TimerFinishedMessage message)
         {
             SetState(false);
-            // inputField.text = "00:00:00"; 
             if (message.FinishReason == TimerFinishedMessage.Reason.Completed)
             {
                 audioSource.PlayOneShot(timerFinishedAlert);
