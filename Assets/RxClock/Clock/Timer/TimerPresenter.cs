@@ -11,11 +11,11 @@ namespace RxClock.Clock
 {
     public class TimerPresenter : MonoBehaviour
     {
-        [SerializeField] private TMP_InputField inputField;
+        [SerializeField, InjectOptional(Id="timer_inputField")] private TMP_InputField inputField;
 
         [Header("Buttons")] 
-        [SerializeField] private Button startButton;
-        [SerializeField] private Button stopButton;
+        [SerializeField, InjectOptional(Id="timer_startButton")] private Button startButton;
+        [SerializeField, InjectOptional(Id="timer_stopButton")] private Button stopButton;
 
         [SerializeField, Tooltip("Right button")] private Image startButtonIcon;
         [SerializeField, Tooltip("Left button")] private Image stopButtonIcon;
@@ -58,10 +58,12 @@ namespace RxClock.Clock
             this.timerFormatter = timerFormatter;
             this.audioSource = audioSource;
             this.timerFinishedAlert = timerFinishedAlert;
+            
+            startButtonIcon ??= startButton.GetComponent<Image>();
+            stopButtonIcon ??= stopButton.GetComponent<Image>();
 
             Dispose();
             updateTimerObservable = timer.RemainingTimeSeconds
-                // .ObserveEveryValueChanged(property => )
                 .Subscribe(UpdateTimer);
 
             onTimerStateChangedObservable = timer.IsRunning

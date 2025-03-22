@@ -11,16 +11,11 @@ namespace RxClock.Tests.PlayMode.Clock
 {
     public partial class StopwatchPresenterShould : ZenjectIntegrationTestFixture
     {
-        [Inject(Id = "stopwatch_elapsedTimeText")]
-        private TMP_Text elapsedTimeText;
-
-        [Inject] private LapEntryPresenter lapEntryPrefab;
+        [Inject(Id = "stopwatch_elapsedTimeText")] private TMP_Text elapsedTimeText;
         [Inject(Id = "stopwatch_scrollRect")] private ScrollRect scrollRect;
-
-        [Inject(Id = "stopwatch_scrollViewContentHolder")]
-        private GameObject scrollViewContentHolder;
-
+        [Inject(Id = "stopwatch_scrollViewContentHolder")] private GameObject scrollViewContentHolder;
         [Inject(Id = "stopwatch_stopButton")] private Button stopButton;
+        [Inject] private LapEntryPresenter lapEntryPrefab;
         [Inject] private StopwatchMock stopwatchMock;
         [Inject] private StopwatchPresenter stopwatchPresenter;
 
