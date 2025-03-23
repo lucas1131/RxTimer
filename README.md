@@ -23,8 +23,7 @@ Technical assignment for my application at Telexistence.
 
 ## Team leader questions
 	1. As we said, this application will be used on iOS/iPad devices. Do you have any concern for UI?
-	A. For the most part no, expect maybe on really old devices with low resolutions the UI is a bit cramped but everything should still be functions. I have checked the UI on most low and high end devices for each manufacturer available in the built-in Unity simulator. I have also tested on my own Android phone. 
-	<!-- TODO test how UI is on windows -->
+	A. For the most part no, expect maybe on really old devices with low resolutions the UI is a bit cramped but everything should still be functions. I have checked the UI on most low and high end devices for each manufacturer available in the built-in Unity simulator. I have also tested on my own Android phone. The interface seems to be properly responsive for mobile phones, just a bit cramped on windows.
 
 	2. How would you refactor the code and/or project after release? What would you prioritize as “must happen” versus “nice to have” changes
 	A. That depends on the direction the team wants to go. There are a few improvement opportunities. 
