@@ -162,7 +162,7 @@ public partial class TimerShould
 }
 ```
 
-Some related resources:
+Some BDD related resources:
 - https://www.agilealliance.org/glossary/bdd/
 - https://katalon.com/resources-center/blog/bdd-testing
 - https://martinfowler.com/bliki/GivenWhenThen.html
